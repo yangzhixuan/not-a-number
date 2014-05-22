@@ -1,0 +1,37 @@
+body {
+    background-color: #eef;
+    -webkit-user-select: none;
+}
+
+#heading {
+    
+}
+
+.square {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    margin: 2px;
+    box-shadow: 3px 3px 5px #808;
+    text-align: center;
+}
+
+.number {
+    margin: auto auto;
+//    text-shadow: 3px 3px 5px #fff;
+    font-weight: bold;
+    text-align: center;
+    font-size: 20px;
+    color: #ddd;
+    cursor: default;
+}
+
+#container {
+    background-color: #ccf;
+    height: 680px;
+    width: 680px;
+    margin: auto auto auto auto;
+    box-shadow: 0px 0px 50px #f0f;
+    position: relative;
+
+}
