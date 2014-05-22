@@ -285,7 +285,7 @@
 
   $(document).ready(function() {
     var timeStep;
-    timeStep = 0;
+    timeStep = 1;
     $("#title").animate({
       left: "+=1000px"
     }, 0);

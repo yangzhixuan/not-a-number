@@ -206,7 +206,7 @@ class Game
 
 
 $(document).ready( ->
-    timeStep = 0
+    timeStep = 1
     $("#title").animate({left:"+=1000px"}, 0)
     $("#title").animate({left:"-=1000px"}, 1900 * timeStep)
 #    $("#title").animate({left:"-=1000px"}, 900)
