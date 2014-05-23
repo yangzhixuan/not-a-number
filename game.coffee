@@ -15,19 +15,40 @@
     color = randomColor()
     return colorToString(color)
 
+@clamp = (a) ->
+    return Math.max(Math.min(a, 1.0), 0.0)
+
+@mediate = (left, right, rate)->
+    return left + (right - left) * rate
+
 @colorToString = (color)->
-    return "hsla(#{color.h * 360}, #{color.s * 100}%, #{color.l * 100}%, 1.0)"
+    return "hsla(#{(color.h - Math.floor(color.h)) * 360}, #{clamp(color.s) * 100}%, #{clamp(color.l) * 100}%, 1.0)"
 
 class Grid 
     constructor: (@x, @y, @game)->
         @mouse = @game.mouse
-
+        @id = @game.gridId
+        @deltaX = 0
+        @game.gridId += 1
+        @exist = true
         @value = Math.pow(2, Math.floor(Math.random() * 10 - 2))
         if @value < 1
             @value = "NAN"
         @selected = false
 
         @color = @getColor()
+        @remainedTime = -1
+
+    cleaned: ()->
+        return @remainedTime >= 0
+
+    clean: ()->
+        @remainedTime = 30
+
+    moveTo: (x, y)->
+        @x = x
+        @y = y
+
         
     getColor: ()->
         color = {}
@@ -43,10 +64,23 @@ class Grid
         else
             color.l = Math.log(@value) * 0.05 + 0.3
 
+#        color.h += @game.time * 0.01
         return color 
 
+    getPosition: ()->
+        originPosition = {x: @game.gridXOffset + @x * @game.gridHeight, y: @game.gridYOffset + @y * @game.gridWidth}
+        if @cleaned()
+            rate = 0.5 + -Math.cos(Math.PI * (30 - @remainedTime) / 30) / 2
+#            console.log(rate)
+            x = mediate(originPosition.x, @game.score.position.x, rate)
+            y = mediate(originPosition.y, @game.score.position.y - @game.gridWidth / 2, rate)
+            console.log(x)
+            return {x: x, y: y}
+
+        return originPosition
+
     getElement: () ->
-        return $("#square-#{@x * $.game.numGridColumns + @y}")
+        return $("#square-#{@id}")
 
     isCconnecting: (grid) ->
         neighbouring = (Math.abs(grid.x - @x) + Math.abs(grid.y - @y) == 1)
@@ -55,8 +89,9 @@ class Grid
         return neighbouring and (doubling or nan)
 
     init: ()->
-        $("#container").append("<div class='square' id='square-#{@x * @game.numGridColumns + @y}'></div>")
-        @getElement().css("-webkit-transform", "translate(#{20 + @y * @game.gridHeight}px, #{20 + @x * @game.gridWidth}px)")
+        $("#container").append("<div class='square' id='square-#{@id}'></div>")
+        @position = @getPosition()
+#        @getElement().css("-webkit-transform", "translate(#{@position.y}px, #{@position.x}px)")
         @getElement().css("background-color", colorToString(@color))
         @getElement().append("<div class='number'>#{@value}</p>")
         @getElement().hide()
@@ -76,14 +111,33 @@ class Grid
                 @mouseUp()
                 return false;
         )
+        @update()
 
     update: ->
+        if @cleaned()
+            if @remainedTime == 0
+                @exist = false
+#            console.log(@remainedTime)
+            @getElement().css("opacity", Math.pow(@remainedTime / 30, 3))
+
+            @remainedTime -= 1
+
         @color = @getColor()
+        if @deltaX != 0
+            movement = Math.min(@deltaX, 5)
+            @deltaX -= movement
+            @position.x += movement
+        if @cleaned()
+            @position = @getPosition()
+        if @position != @lastPosition
+            @getElement().css("top", "#{@position.x}px")
+            @getElement().css("left", "#{@position.y}px")
+#            @getElement().css("-webkit-transform", "translate(#{@position.y}px, #{@position.x}px)")
+        @lastPosition = {x:@position.x, y:@position.y}
+
         if @color != @lastColor
             @getElement().css("background-color", colorToString(@color))
         @lastColor = @color
-    
-
 
     mouseDown: ()->
         if @mouse.state == "none"
@@ -99,11 +153,13 @@ class Grid
             @mouse.addGrid(this)
             @mouse.endPath()
 
+    ###
     hideAfter: (time)->
         setTimeout(
             =>
                 @getElement().hide(300)
             , time)
+    ###
 
 class Mouse
     
@@ -121,59 +177,127 @@ class Mouse
                 result = false
         return result
 
+    evaluatePath: ()->
+        result = 0
+        for node in @path
+            val = node.grid.value
+            if val != "NAN"
+                result += val
+
+        return result
+
     beginPath: ()->
         @path = []
         @state = "select"
 
-
     endPath: ()->
+        if @state == "none"
+            return
         if @checkPath()
+            $.game.score.addValue(@evaluatePath())
             for i in [0...@path.length]
                 node = @path[i]
-                node.grid.hideAfter(100 * i)
-                console.log(i)
+       #         node.grid.hideAfter(100 * i)
+                node.grid.clean()
         for node in @path
             node.grid.selected = false
         @state = "none"
         @path = []
 
     addGrid: (grid)->
-        node = {x: grid.x, y: grid.y, grid: grid}
-        if not (node in @path)
+        inside = false
+        for node in @path
+            if node.x == grid.x and node.y ==  grid.y
+                inside = true
+        if not inside
             if @path.length == 0 or @path[@path.length - 1].grid.isCconnecting(grid)
                 grid.selected = true
+                node = {x: grid.x, y: grid.y, grid: grid}
                 @path.push(node)
+
+class Score
+    constructor: ->
+        $("#score").css("-webkit-transform", "translate()")
+        @value = 0
+        @displayedValue = 0
+        @position = {x: 20, y: $("#container").width() / 2}
+
+    addValue: (points)->
+        @value += points
+
+    update: ->
+        delta = (@value - @displayedValue) * 0.1
+#        if delta == 0 and @value > @displayedValue
+#            delta = 1
+        @displayedValue += delta
+        $("#score").html("#{Math.floor(@displayedValue + 0.3)}")
+
 
 class Game
     constructor: ->
+        @score = new Score
+        @gridId = 0
         @init()
-        @gridWidth = 64
-        @gridHeight = 64
+        @gridWidth = 60
+        @gridHeight = 60
         @numGridColumns = 10
-        @numGridRows = 10
+        @numGridRows = 8
         @numGrids = @numGridColumns * @numGridRows
+        @gridXOffset = 90
+        @gridYOffset = ($("#container").width() - @numGridColumns * @gridWidth) / 2
         @grids = []
         @mouse = new Mouse
         @paused = true
         @timeLeft = 100
+        @gridQueue = []
         for i in [0...@numGridRows]
             @grids[i] = []
+
+    newGrid: (x, y)->
+        grid = new Grid(x, y, this)
+        @grids[x][y] = grid
+        grid.init()
+        @gridQueue.push(grid)
 
     init: ->
         @time = 0
 
-    getGrid: (x, y) ->
-        return $("#square-#{x * @numGridColumns + y}")
+    movementEnd: ->
+        result = true
+        for row in @grids
+            for grid in row
+                if grid != null and grid.deltaX != 0
+                    result = false
+        return result
+
+    nextFrame: ->
+        for x in [0...@numGridRows].reverse()
+            for y in [0...@numGridColumns]
+                if @grids[x][y] == null or not @grids[x][y].exist
+                    if x > 0 and @grids[x - 1][y] != null
+                        @grids[x - 1][y].deltaX += @gridHeight
+                        @grids[x][y] = @grids[x - 1][y]
+                        @grids[x - 1][y].moveTo(x, y)
+                        @grids[x - 1][y] = null
+                    else if x == 0
+                        @newGrid(x, y)
+#                    @grids[x][y].init()
+
+    updateGrids: () ->
+        newQueue = []
+        for grid in @gridQueue
+            if grid == null or grid.exist == false
+                0
+            else
+                grid.update()
+                newQueue.push(grid)
+        @gridQueue = newQueue
 
     update: ->
         if @time < @numGridRows
             x = @time
             for y in [0...@numGridColumns]
-#                console.log(x, y)
-#                $("#container").css("-webkit-transform", "rotateZ(#{@a}deg)")
-                grid = new Grid(x, y, this)
-                @grids[x][y] = grid
-                grid.init()
+                @newGrid(x, y)
                 ###
                 grid.getElement().mouseover( ->
                     $(this).hide(400, ->
@@ -182,12 +306,17 @@ class Game
                 )
                 ###
         else
+            @paused = not @movementEnd()
+            @nextFrame()
             if @time > 20
                 @paused = false 
+            ###
             dx = [0, 1, 0, -1]
             dy = [1, 0, -1, 0]
             for x in [0...@numGridRows]
                 for y in [0...@numGridColumns]
+                    if @grids[x][y] == null
+                        continue
                     @grids[x][y].update()
                     for k in [0...4]
                         neiX = x + dx[k]
@@ -196,7 +325,9 @@ class Game
                             if @grids[x][y].isCconnecting(@grids[neiX][neiY])
                                 1
 #                                @grids[x][y].getElement().css("background-color", "white")
-            
+                    ###
+        @updateGrids()    
+        @score.update()
         @time += 1
         if not @paused
             @timeLeft -= 0.1
@@ -206,14 +337,14 @@ class Game
 
 
 $(document).ready( ->
-    timeStep = 1
-    $("#title").animate({left:"+=1000px"}, 0)
-    $("#title").animate({left:"-=1000px"}, 1900 * timeStep)
+    timeStep = 0
+    $("#title").animate({top:"-=400px"}, 0)
+    $("#title").animate({top:"+=400px"}, 1900 * timeStep)
 #    $("#title").animate({left:"-=1000px"}, 900)
 #    $("#title").hide("scale", {percent: 50, direction: 'horizontal'}, 200);
 #    $("#title").animate({height:"0px"}, "slow")
-    $("#container").animate({top:"+=500px"}, 0)
-    $("#container").animate({top:"-=500px"}, 1900 * timeStep)
+    $("#container").animate({top:"+=700px"}, 0)
+    $("#container").animate({top:"-=700px"}, 1900 * timeStep)
     $.game = new Game
     setTimeout(
         ->
@@ -226,4 +357,18 @@ $(document).ready( ->
         ,
         2000 * timeStep
     )
+
+    setTimeout(
+        ->
+            $("#title-1").animate({fontSize: "90px"}, 500 * timeStep)
+            $("#title-2").slideUp(500 * timeStep)
+            $("#title-3").slideUp(500 * timeStep)
+        ,
+        3000 * timeStep
+    )
+    $("body").mouseup(
+        ->
+            $.game.mouse.endPath()
+    )
+
 )

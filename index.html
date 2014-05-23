@@ -21,19 +21,24 @@
     </form>
  -->
   <div id="title" style="position:relative;">
-    <h1 style="color: #88a; line-height:120px; font-size: 200px; text-align: center; margin:50px 0 0 0; padding: 0; text-shadow: 4px 4px 15px">NAN</h1>
-    <h2 style="color: #669; line-height:10px; font-size: 60.4px; text-align: center; text-shadow: 0px 0px 8px #aaa;">Not A Number</h2>
-    <h2 style="color: #669; line-height:10px; font-size: 44.5px; text-align: center; text-shadow: 0px 0px 8px #aaa;">A Game for Nannan</h2>
+    <p id = "title-1" class = "title" style="color: #88a; line-height: 80%; font-size: 192px; margin: 20px 0 0 0; text-shadow: 4px 4px 15px #aad">NAN</p>
+    <div id = "title-2" class = "title" style="color: #669; line-height: 90%; font-size: 60.4px; text-shadow: 2px 1px 25px #aaf;">Not A Number</div>
+    <div id = "title-3" class = "title" style="color: #669; line-height: 95%; font-size: 42.7px; text-shadow: 2px 1px 25px #aaf;">A Game for Nannan</div>
   </div>
-  <div id="container"><!-- 
-    <div id="hehehe" style="margin: 20%; text-shadow: 3px 3px 15px #888; font-size: 400%; position: absolute">
-      呵呵呵呵<br>
-      呵呵呵呵<br>
-      呵呵呵呵<br>
-      呵呵呵呵<br>
-      
-    </div> -->
-    <progress id="progressbar" value="0" max="100" style="position: absolute; left: 20px; top: 5px; width: 640px"></progress> 
+  <div id="container" style="margin: 30px auto">
+    <progress id="progressbar" value="0" max="100" style="position: absolute; left: 40px; top: 5px; width: 600px;"></progress> 
+    <div id="score" style="position:relative; margin: 30 auto; font-size: 50px; text-align: center">
+      0
+    </div>
+  </div>
+  <div id="how-to-play" style="margin: 30px auto">
+    <div style="width: 600px; margin: 0 auto; font-size: 20px; line-height: 120%">
+      How to play: <br>
+      按下鼠标, 拖出路径. 一个数的后继必须是这个数的两倍. <br>
+      当然, NAN(Not a number)是任何数的两倍. <br>
+      长度大于或等于3的路径就可以消掉. <br>
+      时间结束你就输啦! <br>
+    </div>
   </div>
 </body>
 </html>

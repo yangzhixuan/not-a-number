@@ -4,13 +4,14 @@ body {
 }
 
 #heading {
+    font-family: MyHelvetica;
     
 }
 
 .square {
     position: absolute;
-    width: 60px;
-    height: 60px;
+    width: 56px;
+    height: 56px;
     margin: 2px;
     box-shadow: 3px 3px 5px #808;
     text-align: center;
@@ -26,12 +27,23 @@ body {
     cursor: default;
 }
 
+
+@font-face {
+    font-family: MyHelvetica;
+    src: url('Helvetica/helvetica-light.otf');
+}
+
 #container {
     background-color: #ccf;
-    height: 680px;
+    height: 600px;
     width: 680px;
     margin: auto auto auto auto;
-    box-shadow: 0px 0px 50px #f0f;
+    box-shadow: 0px 0px 20px #f0f;
     position: relative;
+}
 
+.title {
+    font-family: MyHelvetica;
+    text-align: center;
+    padding: 0;
 }
