@@ -31,9 +31,8 @@ class Grid
         @deltaX = 0
         @game.gridId += 1
         @exist = true
-        @value = Math.pow(2, Math.floor(Math.random() * 10 - 2))
-        if @value < 1
-            @value = "NAN"
+#        @value = Math.pow(2, Math.floor(Math.random() * 10 - 2))
+        @value = Math.floor(Math.random() * 10)
         @selected = false
 
         @color = @getColor()
@@ -62,7 +61,7 @@ class Grid
             color.h += 0.1
             color.l = 0.6
         else
-            color.l = Math.log(@value) * 0.05 + 0.3
+            color.l = @value * 0.01 + 0.3
 
 #        color.h += @game.time * 0.01
         return color 
@@ -74,7 +73,7 @@ class Grid
 #            console.log(rate)
             x = mediate(originPosition.x, @game.score.position.x, rate)
             y = mediate(originPosition.y, @game.score.position.y - @game.gridWidth / 2, rate)
-            console.log(x)
+#            console.log(x)
             return {x: x, y: y}
 
         return originPosition
@@ -131,6 +130,7 @@ class Grid
             @position = @getPosition()
         if @position != @lastPosition
             @getElement().css("top", "#{@position.x}px")
+         #   console.log(@position.y)
             @getElement().css("left", "#{@position.y}px")
 #            @getElement().css("-webkit-transform", "translate(#{@position.y}px, #{@position.x}px)")
         @lastPosition = {x:@position.x, y:@position.y}
@@ -217,7 +217,7 @@ class Mouse
 
 class Score
     constructor: ->
-        $("#score").css("-webkit-transform", "translate()")
+#        $("#score").css("-webkit-transform", "translate()")
         @value = 0
         @displayedValue = 0
         @position = {x: 20, y: $("#container").width() / 2}
@@ -235,6 +235,8 @@ class Score
 
 class Game
     constructor: ->
+        $.backgroundBlockId = 0
+        @background = new Background
         @score = new Score
         @gridId = 0
         @init()
@@ -244,7 +246,9 @@ class Game
         @numGridRows = 8
         @numGrids = @numGridColumns * @numGridRows
         @gridXOffset = 90
-        @gridYOffset = ($("#container").width() - @numGridColumns * @gridWidth) / 2
+#        console.log($("#container").width())
+ #       @gridYOffset = ($("#container").width() - @numGridColumns * @gridWidth) / 2
+        @gridYOffset = (680 - @numGridColumns * @gridWidth) / 2
         @grids = []
         @mouse = new Mouse
         @paused = true
@@ -328,6 +332,7 @@ class Game
                     ###
         @updateGrids()    
         @score.update()
+        @background.update()
         @time += 1
         if not @paused
             @timeLeft -= 0.1
@@ -336,10 +341,46 @@ class Game
 #    $("#hehehe").css("-webkit-transform", "rotateX(#{@a}deg)")
 
 
+class BackgroundBlock
+    constructor: ->
+        @id = $.backgroundBlockId
+        console.log(@id)
+        $.backgroundBlockId += 1
+        @x = Math.random() * $("body").height()
+        @y = Math.random() * $("body").width()
+        @size = Math.random() * 10 + 5
+        $("body").append("<div class='background-block' id='background-block-#{@id}' style='width: #{@size}px; height: #{@size}px'> </div>")
+        @update()
+
+    getElement: ()->
+        return $("#background-block-#{@id}")
+
+    update: ()->
+#        console.log(@x, @y)
+        @x -= 1
+        if @x < 0
+            @x = $("body").height()
+        @getElement().css("left", "#{@y}px")
+        @getElement().css("top", "#{@x}px")
+#        @getElement().css("z-index", "5")
+
+class Background
+    constructor: ->
+        @blocks = []
+        for i in [0...100]
+            @blocks.push(new BackgroundBlock)
+    update: ()->
+        for block in @blocks
+            block.update()
+
+
+
+
 $(document).ready( ->
     timeStep = 0
     $("#title").animate({top:"-=400px"}, 0)
     $("#title").animate({top:"+=400px"}, 1900 * timeStep)
+    $("#how-to-play").slideUp(0)
 #    $("#title").animate({left:"-=1000px"}, 900)
 #    $("#title").hide("scale", {percent: 50, direction: 'horizontal'}, 200);
 #    $("#title").animate({height:"0px"}, "slow")
@@ -362,13 +403,19 @@ $(document).ready( ->
         ->
             $("#title-1").animate({fontSize: "90px"}, 500 * timeStep)
             $("#title-2").slideUp(500 * timeStep)
-            $("#title-3").slideUp(500 * timeStep)
+            $("#title-3").animate({fontSize: "49px"}, 500 * timeStep)
         ,
         3000 * timeStep
     )
     $("body").mouseup(
         ->
             $.game.mouse.endPath()
+    )
+    setTimeout(
+        ->
+            $("#how-to-play").slideDown(700)
+        ,
+        4000 * timeStep
     )
 
 )
