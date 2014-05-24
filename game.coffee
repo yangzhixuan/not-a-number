@@ -24,14 +24,13 @@
 @colorToString = (color)->
     return "hsla(#{(color.h - Math.floor(color.h)) * 360}, #{clamp(color.s) * 100}%, #{clamp(color.l) * 100}%, 1.0)"
 
-class Grid 
+class NAN.Grid 
     constructor: (@x, @y, @game)->
         @mouse = @game.mouse
         @id = @game.gridId
         @deltaX = 0
         @game.gridId += 1
         @exist = true
-#        @value = Math.pow(2, Math.floor(Math.random() * 10 - 2))
         @value = Math.floor(Math.random() * 10)
         @selected = false
 
@@ -63,17 +62,14 @@ class Grid
         else
             color.l = @value * 0.01 + 0.3
 
-#        color.h += @game.time * 0.01
         return color 
 
     getPosition: ()->
         originPosition = {x: @game.gridXOffset + @x * @game.gridHeight, y: @game.gridYOffset + @y * @game.gridWidth}
         if @cleaned()
             rate = 0.5 + -Math.cos(Math.PI * (30 - @remainedTime) / 30) / 2
-#            console.log(rate)
             x = mediate(originPosition.x, @game.score.position.x, rate)
             y = mediate(originPosition.y, @game.score.position.y - @game.gridWidth / 2, rate)
-#            console.log(x)
             return {x: x, y: y}
 
         return originPosition
@@ -81,16 +77,13 @@ class Grid
     getElement: () ->
         return $("#square-#{@id}")
 
-    isCconnecting: (grid) ->
+    isConnecting: (grid) ->
         neighbouring = (Math.abs(grid.x - @x) + Math.abs(grid.y - @y) == 1)
-        doubling = (grid.value == @value * 2)
-        nan = (@value == "NAN" or grid.value == "NAN")
-        return neighbouring and (doubling or nan)
+        return neighbouring
 
     init: ()->
         $("#container").append("<div class='square' id='square-#{@id}'></div>")
         @position = @getPosition()
-#        @getElement().css("-webkit-transform", "translate(#{@position.y}px, #{@position.x}px)")
         @getElement().css("background-color", colorToString(@color))
         @getElement().append("<div class='number'>#{@value}</p>")
         @getElement().hide()
@@ -116,7 +109,6 @@ class Grid
         if @cleaned()
             if @remainedTime == 0
                 @exist = false
-#            console.log(@remainedTime)
             @getElement().css("opacity", Math.pow(@remainedTime / 30, 3))
 
             @remainedTime -= 1
@@ -130,9 +122,7 @@ class Grid
             @position = @getPosition()
         if @position != @lastPosition
             @getElement().css("top", "#{@position.x}px")
-         #   console.log(@position.y)
             @getElement().css("left", "#{@position.y}px")
-#            @getElement().css("-webkit-transform", "translate(#{@position.y}px, #{@position.x}px)")
         @lastPosition = {x:@position.x, y:@position.y}
 
         if @color != @lastColor
@@ -153,15 +143,7 @@ class Grid
             @mouse.addGrid(this)
             @mouse.endPath()
 
-    ###
-    hideAfter: (time)->
-        setTimeout(
-            =>
-                @getElement().hide(300)
-            , time)
-    ###
-
-class Mouse
+class NAN.Mouse
     
     constructor: ->
         @path = []
@@ -170,20 +152,19 @@ class Mouse
     checkPath: ()->
         result = true
        # console.log(@path.length)
-        if @path.length < 3
+        if @path.length < 2
             result = false
         for i in [0...(@path.length - 1)]
-            if @path[i].grid.isCconnecting(@path[i + 1].grid) == false
+            if @path[i].grid.isConnecting(@path[i + 1].grid) == false
                 result = false
         return result
 
     evaluatePath: ()->
-        result = 0
+        result = ""
         for node in @path
             val = node.grid.value
-            if val != "NAN"
-                result += val
-
+            result += val.toString()
+        console.log(result)
         return result
 
     beginPath: ()->
@@ -194,7 +175,18 @@ class Mouse
         if @state == "none"
             return
         if @checkPath()
-            $.game.score.addValue(@evaluatePath())
+            numberString = @evaluatePath()
+            result = $.analyzer.analyze(numberString)
+            $.numberShow = new NAN.NumberShow(
+                {
+                    n: numberString,
+                    descriptions: result.descriptions.filter(
+                        (desc)->
+                            return desc != null and desc != ""
+                        ).join("<br>")
+                }
+            )
+            $.game.score.addValue(result.score)
             for i in [0...@path.length]
                 node = @path[i]
        #         node.grid.hideAfter(100 * i)
@@ -205,17 +197,19 @@ class Mouse
         @path = []
 
     addGrid: (grid)->
+        if @path.length >= 9
+            return
         inside = false
         for node in @path
             if node.x == grid.x and node.y ==  grid.y
                 inside = true
         if not inside
-            if @path.length == 0 or @path[@path.length - 1].grid.isCconnecting(grid)
+            if @path.length == 0 or @path[@path.length - 1].grid.isConnecting(grid)
                 grid.selected = true
                 node = {x: grid.x, y: grid.y, grid: grid}
                 @path.push(node)
 
-class Score
+class NAN.Score
     constructor: ->
 #        $("#score").css("-webkit-transform", "translate()")
         @value = 0
@@ -232,12 +226,43 @@ class Score
         @displayedValue += delta
         $("#score").html("#{Math.floor(@displayedValue + 0.3)}")
 
+class NAN.NumberShow
+    constructor: (data)->
+        @time = 0
+        @finished = false
+        @getElement().show()
+        @getElement().animate({opacity: "0.95"}, 400)
+        @getElementNumber().html(data.n)
+        if data.descriptions == null or data.descriptions == ""
+            data.descriptions = "Not Interesting"
+        @getElementDescriptions().html(data.descriptions)
 
-class Game
+    getElement: ->
+        $("#number-show")
+
+    getElementNumber: ->
+        $("#number-show-number")
+
+    getElementDescriptions: ->
+        $("#number-show-descriptions")
+
+    update: ->
+        @time += 1
+        if @time > 50
+            @getElement().animate({opacity: "0.0"}, 400)
+            setTimeout(
+                =>
+                    @getElement().hide(200)
+                , 400
+            )
+            @finished = true
+
+
+class NAN.Game
     constructor: ->
         $.backgroundBlockId = 0
-        @background = new Background
-        @score = new Score
+        @background = new NAN.Background
+        @score = new NAN.Score
         @gridId = 0
         @init()
         @gridWidth = 60
@@ -250,7 +275,7 @@ class Game
  #       @gridYOffset = ($("#container").width() - @numGridColumns * @gridWidth) / 2
         @gridYOffset = (680 - @numGridColumns * @gridWidth) / 2
         @grids = []
-        @mouse = new Mouse
+        @mouse = new NAN.Mouse
         @paused = true
         @timeLeft = 100
         @gridQueue = []
@@ -258,7 +283,7 @@ class Game
             @grids[i] = []
 
     newGrid: (x, y)->
-        grid = new Grid(x, y, this)
+        grid = new NAN.Grid(x, y, this)
         @grids[x][y] = grid
         grid.init()
         @gridQueue.push(grid)
@@ -297,7 +322,17 @@ class Game
                 newQueue.push(grid)
         @gridQueue = newQueue
 
+    getPaused: ->
+        if @time <= 40
+            return true
+        if $.numberShow and not $.numberShow.finished
+            return true
+        if not @movementEnd()
+            return true
+        return false
+
     update: ->
+        @paused = @getPaused()
         if @time < @numGridRows
             x = @time
             for y in [0...@numGridColumns]
@@ -310,83 +345,31 @@ class Game
                 )
                 ###
         else
-            @paused = not @movementEnd()
             @nextFrame()
-            if @time > 20
-                @paused = false 
-            ###
-            dx = [0, 1, 0, -1]
-            dy = [1, 0, -1, 0]
-            for x in [0...@numGridRows]
-                for y in [0...@numGridColumns]
-                    if @grids[x][y] == null
-                        continue
-                    @grids[x][y].update()
-                    for k in [0...4]
-                        neiX = x + dx[k]
-                        neiY = y + dy[k]
-                        if neiX in [0...@numGridColumns] and neiY in [0...@numGridColumns]
-                            if @grids[x][y].isCconnecting(@grids[neiX][neiY])
-                                1
-#                                @grids[x][y].getElement().css("background-color", "white")
-                    ###
         @updateGrids()    
         @score.update()
         @background.update()
         @time += 1
+        if $.numberShow
+            $.numberShow.update()
+            if $.numberShow.finished
+                $.numberShow = null
+
         if not @paused
             @timeLeft -= 0.1
         $("#progressbar").attr("value", "#{@timeLeft}")
-#        $("#title").css("-webkit-transform", "rotateZ(#{Math.sin(@time / 20) * 5}deg)")
-#    $("#hehehe").css("-webkit-transform", "rotateX(#{@a}deg)")
-
-
-class BackgroundBlock
-    constructor: ->
-        @id = $.backgroundBlockId
-        console.log(@id)
-        $.backgroundBlockId += 1
-        @x = Math.random() * $("body").height()
-        @y = Math.random() * $("body").width()
-        @size = Math.random() * 10 + 5
-        $("body").append("<div class='background-block' id='background-block-#{@id}' style='width: #{@size}px; height: #{@size}px'> </div>")
-        @update()
-
-    getElement: ()->
-        return $("#background-block-#{@id}")
-
-    update: ()->
-#        console.log(@x, @y)
-        @x -= 1
-        if @x < 0
-            @x = $("body").height()
-        @getElement().css("left", "#{@y}px")
-        @getElement().css("top", "#{@x}px")
-#        @getElement().css("z-index", "5")
-
-class Background
-    constructor: ->
-        @blocks = []
-        for i in [0...100]
-            @blocks.push(new BackgroundBlock)
-    update: ()->
-        for block in @blocks
-            block.update()
-
-
-
 
 $(document).ready( ->
-    timeStep = 0
+    timeStep = 1
+    $("#number-show").hide()
+    $("#number-show").css("opacity", "0.0")
+    $.analyzer = new window.NAN.Analyzer
     $("#title").animate({top:"-=400px"}, 0)
     $("#title").animate({top:"+=400px"}, 1900 * timeStep)
     $("#how-to-play").slideUp(0)
-#    $("#title").animate({left:"-=1000px"}, 900)
-#    $("#title").hide("scale", {percent: 50, direction: 'horizontal'}, 200);
-#    $("#title").animate({height:"0px"}, "slow")
     $("#container").animate({top:"+=700px"}, 0)
     $("#container").animate({top:"-=700px"}, 1900 * timeStep)
-    $.game = new Game
+    $.game = new NAN.Game
     setTimeout(
         ->
             setInterval(
@@ -417,5 +400,4 @@ $(document).ready( ->
         ,
         4000 * timeStep
     )
-
 )

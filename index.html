@@ -4,9 +4,10 @@
     <script type="text/javascript" src="jquery-1.11.1.min.js"></script>
     <script type="text/javascript" src="color-conversion-algorithms.js"></script>
     <script type="text/javascript" src="coffee-script.js"></script>
+    <script type="text/javascript" src="background.js" > </script>
+    <script type="text/javascript" src="analyzer.js" > </script>
     <script type="text/javascript" src="game.js" > </script>
-    <link rel="stylesheet" type="text/css" href="a.css" media="all" />
-    <link rel="stylesheet" type="text/css" href="a.css" media="all" />
+    <link rel="stylesheet" type="text/css" href="nan.css" media="all" />
 </head>
 <body>
 <!--     <div  style="-webkit-ransform: rotate(15deg); background-color: #F8F8F8; height: 500px; width: 500px; text-align: center; left: 100px; top: 100px; box-shadow: 5px 5px 25px #888888; position: absolute">
@@ -21,23 +22,26 @@
     </form>
  -->
   <div id="title" style="position:relative;">
-    <p id = "title-1" class = "title" style="color: #88a; line-height: 80%; font-size: 192px; margin: 20px 0 0 0; text-shadow: 4px 4px 15px #aad">NAN</p>
+    <div id = "title-1" class = "title" style="color: #88a; line-height: 80%; font-size: 192px; margin: 20px 0 0 0; text-shadow: 4px 4px 15px #aad">NAN</div>
     <div id = "title-2" class = "title" style="color: #669; line-height: 90%; font-size: 60.4px; text-shadow: 2px 1px 25px #aaf;">Not A Number</div>
     <div id = "title-3" class = "title" style="color: #669; line-height: 95%; font-size: 42.7px; text-shadow: 2px 1px 25px #aaf;">A Game for Nannan</div>
   </div>
   <div id="container" style="margin: 30px auto">
+    <div id="number-show">
+      <div id="number-show-number" style="font-size: 50px; margin: 50px auto; text-align: center; font-family: MyHelvetica"> </div>
+      <div id="number-show-descriptions" style="font-size: 50px; margin: 0 auto; text-align: center; font-family: MyHelvetica; text-shadow: 0px 0px 10px #0ff"> </div>
+    </div>
+
     <progress id="progressbar" value="0" max="100" style="position: absolute; left: 40px; top: 5px; width: 600px;"></progress> 
     <div id="score" style="position:relative; margin: 30 auto; font-size: 50px; text-align: center">
       0
     </div>
   </div>
   <div id="how-to-play" style="margin: 30px auto">
-    <div style="width: 600px; margin: 0 auto; font-size: 20px; line-height: 120%; color: #55c">
+    <div style="width: 600px; margin: 0 auto; font-size: 20px; line-height: 120%; color: #55c; font-family: MyHelvetica">
       How to play: <br>
-      按下鼠标, 拖出路径. 一个数的后继必须是这个数的两倍. <br>
-      当然, NAN(Not a number)是任何数的两倍. <br>
-      长度大于或等于3的路径就可以消掉. <br>
-      时间结束你就输啦! <br>
+      Link the grids to get your favourite numbers. <br>
+      More special numbers are with more points! <br> 
     </div>
   </div>
 </body>
