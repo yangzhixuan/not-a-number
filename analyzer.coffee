@@ -38,6 +38,84 @@ class NAN.PrimeNumberSet extends NAN.NumberSet
 		result.score *= 3
 		return result
 
+
+class NAN.PureOddNumberSet extends NAN.NumberSet
+	constructor: ()->
+		super()
+		@description = "Pure Odd Number"
+
+	analyze: (n)->
+		for char in n
+			if parseInt(char) % 2 == 0
+				return null 
+		result = {score: n.length, description: @description}
+		return result
+
+class NAN.PureEvenNumberSet extends NAN.NumberSet
+	constructor: ()->
+		super()
+		@description = "Pure Even Number"
+
+	analyze: (n)->
+		for char in n
+			if parseInt(char) % 2 == 1
+				return null 
+		result = {score: n.length, description: @description}
+		return result
+
+
+class NAN.PureNumberSet extends NAN.NumberSet
+	constructor: ()->
+		super()
+		@description = "Pure Number"
+
+	analyze: (n)->
+		for char in n
+			if char != n[0]
+				return null
+		result = {score: n.length, description: @description}
+		return result
+
+
+class NAN.APNumberSet extends NAN.NumberSet
+	constructor: ()->
+		super()
+		@description = "AP Number"
+
+	analyze: (n)->
+		return null if n.length < 3 
+		delta = -1
+		for i in [0...n.length - 1]
+			newDelta = (n[i + 1] - n[i] + 10) % 10
+			if newDelta == 0
+				return null
+			if delta == -1
+				delta = newDelta
+			else 
+				if delta != newDelta
+					return null
+		result = {score: n.length, description: @description}
+		return result
+
+
+class NAN.WaveNumberSet extends NAN.NumberSet
+	constructor: ()->
+		super()
+		@description = "Wave Number"
+
+	analyze: (n)->
+		return null if n.length < 3 
+		lastDelta = 0
+		for i in [0...n.length - 1]
+			newDelta = (n[i + 1] - n[i])
+			return null if Math.abs(newDelta) != 1
+			if lastDelta != 0 and newDelta + lastDelta != 0
+				return null
+			lastDelta = newDelta
+		result = {score: n.length, description: @description}
+		return result
+
+
 class NAN.PowerOf2NumberSet extends NAN.NumberSet
 	constructor: ()->
 		super()
@@ -47,6 +125,15 @@ class NAN.PowerOf2NumberSet extends NAN.NumberSet
 			@numbers.push(a)
 			a *= 2
 
+class NAN.CloseToSomePowerOf2NumberSet extends NAN.NumberSet
+	constructor: ()->
+		super()
+		@description = "Close To Some Power Of 2"
+		a = 16
+		while a < NAN.maximumNumber
+			@numbers.push(a + 1)
+			@numbers.push(a - 1)
+			a *= 2
 
 class NAN.SquareNumberSet extends NAN.NumberSet
 	constructor: ()->

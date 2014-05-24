@@ -145,7 +145,7 @@
       }
       this.color = this.getColor();
       if (this.deltaX !== 0) {
-        movement = Math.min(this.deltaX, 5);
+        movement = Math.min(this.deltaX, 10);
         this.deltaX -= movement;
         this.position.x += movement;
       }
@@ -220,7 +220,6 @@
         val = node.grid.value;
         result += val.toString();
       }
-      console.log(result);
       return result;
     };
 
@@ -241,7 +240,8 @@
           n: numberString,
           descriptions: result.descriptions.filter(function(desc) {
             return desc !== null && desc !== "";
-          }).join("<br>")
+          }).join("<br>"),
+          score: result.score
         });
         $.game.score.addValue(result.score);
         for (i = _i = 0, _ref = this.path.length; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
@@ -261,6 +261,9 @@
     Mouse.prototype.addGrid = function(grid) {
       var inside, node, _i, _len, _ref;
       if (this.path.length >= 9) {
+        return;
+      }
+      if (this.path.length === 0 && grid.value === 0) {
         return;
       }
       inside = false;
@@ -324,6 +327,7 @@
         opacity: "0.95"
       }, 400);
       this.getElementNumber().html(data.n);
+      this.getElementScore().html(data.score.toString() + " points");
       if (data.descriptions === null || data.descriptions === "") {
         data.descriptions = "Not Interesting";
       }
@@ -336,6 +340,10 @@
 
     NumberShow.prototype.getElementNumber = function() {
       return $("#number-show-number");
+    };
+
+    NumberShow.prototype.getElementScore = function() {
+      return $("#number-show-score");
     };
 
     NumberShow.prototype.getElementDescriptions = function() {
@@ -467,7 +475,7 @@
     };
 
     Game.prototype.getPaused = function() {
-      if (this.time <= 40) {
+      if (this.time <= 100) {
         return true;
       }
       if ($.numberShow && !$.numberShow.finished) {
@@ -509,7 +517,7 @@
         }
       }
       if (!this.paused) {
-        this.timeLeft -= 0.1;
+        this.timeLeft -= 0.03;
       }
       return $("#progressbar").attr("value", "" + this.timeLeft);
     };

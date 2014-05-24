@@ -16,7 +16,7 @@
     return colorToString(color)
 
 @clamp = (a) ->
-    return Math.max(Math.min(a, 1.0), 0.0)
+    return Math.max(Math.min(a, 1.0), 0.0) 
 
 @mediate = (left, right, rate)->
     return left + (right - left) * rate
@@ -34,16 +34,16 @@ class NAN.Grid
         @value = Math.floor(Math.random() * 10)
         @selected = false
 
-        @color = @getColor()
+        @color = @getColor() 
         @remainedTime = -1
 
     cleaned: ()->
         return @remainedTime >= 0
 
-    clean: ()->
+    clean: ()-> 
         @remainedTime = 30
 
-    moveTo: (x, y)->
+    moveTo: (x, y)-> 
         @x = x
         @y = y
 
@@ -115,7 +115,7 @@ class NAN.Grid
 
         @color = @getColor()
         if @deltaX != 0
-            movement = Math.min(@deltaX, 5)
+            movement = Math.min(@deltaX, 10)
             @deltaX -= movement
             @position.x += movement
         if @cleaned()
@@ -164,7 +164,7 @@ class NAN.Mouse
         for node in @path
             val = node.grid.value
             result += val.toString()
-        console.log(result)
+      #  console.log(result)
         return result
 
     beginPath: ()->
@@ -183,7 +183,8 @@ class NAN.Mouse
                     descriptions: result.descriptions.filter(
                         (desc)->
                             return desc != null and desc != ""
-                        ).join("<br>")
+                        ).join("<br>"),
+                    score: result.score
                 }
             )
             $.game.score.addValue(result.score)
@@ -198,6 +199,8 @@ class NAN.Mouse
 
     addGrid: (grid)->
         if @path.length >= 9
+            return
+        if @path.length == 0 and grid.value == 0
             return
         inside = false
         for node in @path
@@ -233,6 +236,7 @@ class NAN.NumberShow
         @getElement().show()
         @getElement().animate({opacity: "0.95"}, 400)
         @getElementNumber().html(data.n)
+        @getElementScore().html(data.score.toString() + " points")
         if data.descriptions == null or data.descriptions == ""
             data.descriptions = "Not Interesting"
         @getElementDescriptions().html(data.descriptions)
@@ -240,8 +244,12 @@ class NAN.NumberShow
     getElement: ->
         $("#number-show")
 
+
     getElementNumber: ->
         $("#number-show-number")
+
+    getElementScore: ->
+        $("#number-show-score")
 
     getElementDescriptions: ->
         $("#number-show-descriptions")
@@ -323,7 +331,7 @@ class NAN.Game
         @gridQueue = newQueue
 
     getPaused: ->
-        if @time <= 40
+        if @time <= 100
             return true
         if $.numberShow and not $.numberShow.finished
             return true
@@ -356,7 +364,7 @@ class NAN.Game
                 $.numberShow = null
 
         if not @paused
-            @timeLeft -= 0.1
+            @timeLeft -= 0.03
         $("#progressbar").attr("value", "#{@timeLeft}")
 
 $(document).ready( ->

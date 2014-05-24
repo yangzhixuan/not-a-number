@@ -76,6 +76,165 @@
 
   })(NAN.NumberSet);
 
+  NAN.PureOddNumberSet = (function(_super) {
+
+    __extends(PureOddNumberSet, _super);
+
+    function PureOddNumberSet() {
+      PureOddNumberSet.__super__.constructor.call(this);
+      this.description = "Pure Odd Number";
+    }
+
+    PureOddNumberSet.prototype.analyze = function(n) {
+      var char, result, _i, _len;
+      for (_i = 0, _len = n.length; _i < _len; _i++) {
+        char = n[_i];
+        if (parseInt(char) % 2 === 0) {
+          return null;
+        }
+      }
+      result = {
+        score: n.length,
+        description: this.description
+      };
+      return result;
+    };
+
+    return PureOddNumberSet;
+
+  })(NAN.NumberSet);
+
+  NAN.PureEvenNumberSet = (function(_super) {
+
+    __extends(PureEvenNumberSet, _super);
+
+    function PureEvenNumberSet() {
+      PureEvenNumberSet.__super__.constructor.call(this);
+      this.description = "Pure Even Number";
+    }
+
+    PureEvenNumberSet.prototype.analyze = function(n) {
+      var char, result, _i, _len;
+      for (_i = 0, _len = n.length; _i < _len; _i++) {
+        char = n[_i];
+        if (parseInt(char) % 2 === 1) {
+          return null;
+        }
+      }
+      result = {
+        score: n.length,
+        description: this.description
+      };
+      return result;
+    };
+
+    return PureEvenNumberSet;
+
+  })(NAN.NumberSet);
+
+  NAN.PureNumberSet = (function(_super) {
+
+    __extends(PureNumberSet, _super);
+
+    function PureNumberSet() {
+      PureNumberSet.__super__.constructor.call(this);
+      this.description = "Pure Number";
+    }
+
+    PureNumberSet.prototype.analyze = function(n) {
+      var char, result, _i, _len;
+      for (_i = 0, _len = n.length; _i < _len; _i++) {
+        char = n[_i];
+        if (char !== n[0]) {
+          return null;
+        }
+      }
+      result = {
+        score: n.length,
+        description: this.description
+      };
+      return result;
+    };
+
+    return PureNumberSet;
+
+  })(NAN.NumberSet);
+
+  NAN.APNumberSet = (function(_super) {
+
+    __extends(APNumberSet, _super);
+
+    function APNumberSet() {
+      APNumberSet.__super__.constructor.call(this);
+      this.description = "AP Number";
+    }
+
+    APNumberSet.prototype.analyze = function(n) {
+      var delta, i, newDelta, result, _i, _ref;
+      if (n.length < 3) {
+        return null;
+      }
+      delta = -1;
+      for (i = _i = 0, _ref = n.length - 1; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
+        newDelta = (n[i + 1] - n[i] + 10) % 10;
+        if (newDelta === 0) {
+          return null;
+        }
+        if (delta === -1) {
+          delta = newDelta;
+        } else {
+          if (delta !== newDelta) {
+            return null;
+          }
+        }
+      }
+      result = {
+        score: n.length,
+        description: this.description
+      };
+      return result;
+    };
+
+    return APNumberSet;
+
+  })(NAN.NumberSet);
+
+  NAN.WaveNumberSet = (function(_super) {
+
+    __extends(WaveNumberSet, _super);
+
+    function WaveNumberSet() {
+      WaveNumberSet.__super__.constructor.call(this);
+      this.description = "Wave Number";
+    }
+
+    WaveNumberSet.prototype.analyze = function(n) {
+      var i, lastDelta, newDelta, result, _i, _ref;
+      if (n.length < 3) {
+        return null;
+      }
+      lastDelta = 0;
+      for (i = _i = 0, _ref = n.length - 1; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
+        newDelta = n[i + 1] - n[i];
+        if (Math.abs(newDelta) !== 1) {
+          return null;
+        }
+        if (lastDelta !== 0 && newDelta + lastDelta !== 0) {
+          return null;
+        }
+        lastDelta = newDelta;
+      }
+      result = {
+        score: n.length,
+        description: this.description
+      };
+      return result;
+    };
+
+    return WaveNumberSet;
+
+  })(NAN.NumberSet);
+
   NAN.PowerOf2NumberSet = (function(_super) {
 
     __extends(PowerOf2NumberSet, _super);
@@ -92,6 +251,26 @@
     }
 
     return PowerOf2NumberSet;
+
+  })(NAN.NumberSet);
+
+  NAN.CloseToSomePowerOf2NumberSet = (function(_super) {
+
+    __extends(CloseToSomePowerOf2NumberSet, _super);
+
+    function CloseToSomePowerOf2NumberSet() {
+      var a;
+      CloseToSomePowerOf2NumberSet.__super__.constructor.call(this);
+      this.description = "Close To Some Power Of 2";
+      a = 16;
+      while (a < NAN.maximumNumber) {
+        this.numbers.push(a + 1);
+        this.numbers.push(a - 1);
+        a *= 2;
+      }
+    }
+
+    return CloseToSomePowerOf2NumberSet;
 
   })(NAN.NumberSet);
 
