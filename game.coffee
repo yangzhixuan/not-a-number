@@ -66,6 +66,7 @@ class NAN.Grid
 
     getPosition: ()->
         originPosition = {x: @game.gridXOffset + @x * @game.gridHeight, y: @game.gridYOffset + @y * @game.gridWidth}
+#        console.log(@game.gridYOffset)
         if @cleaned()
             rate = 0.5 + -Math.cos(Math.PI * (30 - @remainedTime) / 30) / 2
             x = mediate(originPosition.x, @game.score.position.x, rate)
@@ -85,7 +86,7 @@ class NAN.Grid
         $("#container").append("<div class='square' id='square-#{@id}'></div>")
         @position = @getPosition()
         @getElement().css("background-color", colorToString(@color))
-        @getElement().append("<div class='number'>#{@value}</p>")
+        @getElement().append("<div class='number'>#{@value}</div>")
         @getElement().hide()
         @getElement().show(500)
         @getElement().mouseover(
@@ -177,21 +178,20 @@ class NAN.Mouse
         if @checkPath()
             numberString = @evaluatePath()
             result = $.analyzer.analyze(numberString)
-            $.numberShow = new NAN.NumberShow(
-                {
-                    n: numberString,
-                    descriptions: result.descriptions.filter(
-                        (desc)->
-                            return desc != null and desc != ""
-                        ).join("<br>"),
-                    score: result.score
-                }
-            )
+            $.numberShow = new NAN.NumberShow
+                n: numberString,
+                descriptions: result.descriptions.filter(
+                    (desc)->
+                        return desc != null and desc != ""
+                    ).join("<br>"),
+                score: result.score
+            
             $.game.score.addValue(result.score)
-            for i in [0...@path.length]
-                node = @path[i]
-       #         node.grid.hideAfter(100 * i)
-                node.grid.clean()
+            if result.score != 0
+                for i in [0...@path.length]
+                    node = @path[i]
+           #         node.grid.hideAfter(100 * i)
+                    node.grid.clean()
         for node in @path
             node.grid.selected = false
         @state = "none"
@@ -273,15 +273,23 @@ class NAN.Game
         @score = new NAN.Score
         @gridId = 0
         @init()
-        @gridWidth = 60
-        @gridHeight = 60
-        @numGridColumns = 10
-        @numGridRows = 8
+        @gridMargin = 2
+        @containerHeight = 680
+        @containerWidth = 680
+        @numGridRows = 6
+        @numGridColumns = 6
         @numGrids = @numGridColumns * @numGridRows
+        @gridWidth = (@containerWidth - 100) / @numGridRows
+        @gridHeight = @gridWidth
         @gridXOffset = 90
-#        console.log($("#container").width())
- #       @gridYOffset = ($("#container").width() - @numGridColumns * @gridWidth) / 2
-        @gridYOffset = (680 - @numGridColumns * @gridWidth) / 2
+        @gridYOffset = (@containerWidth - @numGridColumns * @gridWidth) / 2
+        console.log(@gridWidth)
+        setStyleRuleValue(".board", "width", "#{@containerWidth}px")
+        setStyleRuleValue(".board", "height", "#{@containerHeight}px")
+        setStyleRuleValue(".number", "line-height", "#{@gridHeight}px")
+        setStyleRuleValue(".square", "height", "#{@gridHeight - @gridMargin * 2}px")
+        setStyleRuleValue(".square", "width", "#{@gridWidth - @gridMargin * 2}px")
+        
         @grids = []
         @mouse = new NAN.Mouse
         @paused = true
@@ -368,7 +376,7 @@ class NAN.Game
         $("#progressbar").attr("value", "#{@timeLeft}")
 
 $(document).ready( ->
-    timeStep = 1
+    timeStep = 0
     $("#number-show").hide()
     $("#number-show").css("opacity", "0.0")
     $.analyzer = new window.NAN.Analyzer

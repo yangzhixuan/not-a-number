@@ -116,7 +116,7 @@
       $("#container").append("<div class='square' id='square-" + this.id + "'></div>");
       this.position = this.getPosition();
       this.getElement().css("background-color", colorToString(this.color));
-      this.getElement().append("<div class='number'>" + this.value + "</p>");
+      this.getElement().append("<div class='number'>" + this.value + "</div>");
       this.getElement().hide();
       this.getElement().show(500);
       this.getElement().mouseover(function() {
@@ -244,9 +244,11 @@
           score: result.score
         });
         $.game.score.addValue(result.score);
-        for (i = _i = 0, _ref = this.path.length; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
-          node = this.path[i];
-          node.grid.clean();
+        if (result.score !== 0) {
+          for (i = _i = 0, _ref = this.path.length; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
+            node = this.path[i];
+            node.grid.clean();
+          }
         }
       }
       _ref1 = this.path;
@@ -377,13 +379,22 @@
       this.score = new NAN.Score;
       this.gridId = 0;
       this.init();
-      this.gridWidth = 60;
-      this.gridHeight = 60;
-      this.numGridColumns = 10;
-      this.numGridRows = 8;
+      this.gridMargin = 2;
+      this.containerHeight = 680;
+      this.containerWidth = 680;
+      this.numGridRows = 6;
+      this.numGridColumns = 6;
       this.numGrids = this.numGridColumns * this.numGridRows;
+      this.gridWidth = (this.containerWidth - 100) / this.numGridRows;
+      this.gridHeight = this.gridWidth;
       this.gridXOffset = 90;
-      this.gridYOffset = (680 - this.numGridColumns * this.gridWidth) / 2;
+      this.gridYOffset = (this.containerWidth - this.numGridColumns * this.gridWidth) / 2;
+      console.log(this.gridWidth);
+      setStyleRuleValue(".board", "width", "" + this.containerWidth + "px");
+      setStyleRuleValue(".board", "height", "" + this.containerHeight + "px");
+      setStyleRuleValue(".number", "line-height", "" + this.gridHeight + "px");
+      setStyleRuleValue(".square", "height", "" + (this.gridHeight - this.gridMargin * 2) + "px");
+      setStyleRuleValue(".square", "width", "" + (this.gridWidth - this.gridMargin * 2) + "px");
       this.grids = [];
       this.mouse = new NAN.Mouse;
       this.paused = true;
@@ -528,7 +539,7 @@
 
   $(document).ready(function() {
     var timeStep;
-    timeStep = 1;
+    timeStep = 0;
     $("#number-show").hide();
     $("#number-show").css("opacity", "0.0");
     $.analyzer = new window.NAN.Analyzer;
