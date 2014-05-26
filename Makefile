@@ -1,14 +1,26 @@
-game-min.js: game.coffee
-	coffee -c game.coffee
-	uglifyjs game.js > game-min.js
+javascript/game-min.js: game.coffee
+	coffee -c -o javascript/ game.coffee
+	uglifyjs game.js > javascript/game-min.js
 
-background-min.js: background.coffee
-	coffee -c background.coffee
-	uglifyjs background.js > background-min.js
+javascript/background-min.js: background.coffee
+	coffee -c -o javascript/ background.coffee
+	uglifyjs background.js > javascript/background-min.js
 
-analyzer-min.js: analyzer.coffee
-	coffee -c analyzer.coffee
-	uglifyjs analyzer.js > analyzer-min.js
+javascript/analyzer-min.js: analyzer.coffee
+	coffee -c -o javascript/ analyzer.coffee
+	uglifyjs analyzer.js > javascript/analyzer-min.js
 
-nan:  game-min.js background-min.js analyzer-min.js
+javascript/grid-min.js: grid.coffee
+	coffee -c -o javascript/ grid.coffee
+	uglifyjs grid.js > javascript/grid-min.js
+
+javascript/mouse-min.js: mouse.coffee
+	coffee -c -o javascript/ mouse.coffee
+	uglifyjs mouse.js > javascript/mouse-min.js
+
+javascript/elements-min.js: elements.coffee
+	coffee -c -o javascript/ elements.coffee
+	uglifyjs elements.js > javascript/elements-min.js
+
+nan:  javascript/game-min.js javascript/background-min.js javascript/analyzer-min.js javascript/grid-min.js javascript/mouse-min.js javascript/elements-min.js
 	echo built

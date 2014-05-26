@@ -1,7 +1,7 @@
 import os
 import time
 
-files = ["game", "background", "analyzer"]
+files = ["game", "background", "analyzer", "grid", "mouse", "elements"]
 
 makefile = open("Makefile", "w")
 
@@ -9,14 +9,14 @@ makefile = open("Makefile", "w")
 makestr = ""
 
 for f in files:
-	makestr += "%s-min.js: %s.coffee\n" % (f, f)
-	makestr += chr(9) + "coffee -c %s.coffee\n" % f
-	makestr += chr(9) + "uglifyjs %s.js > %s-min.js\n" % (f, f)
+	makestr += "javascript/%s-min.js: %s.coffee\n" % (f, f)
+	makestr += chr(9) + "coffee -c -o javascript/ %s.coffee\n" % (f,)
+	makestr += chr(9) + "uglifyjs %s.js > javascript/%s-min.js\n" % (f, f)
 	makestr += "\n"
 
 makestr += "nan: "
 for f in files: 
-	makestr += " %s-min.js" % f
+	makestr += " javascript/%s-min.js" % f
 makestr += "\n"
 makestr += chr(9) + "echo built"
 
