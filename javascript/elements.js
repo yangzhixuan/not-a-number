@@ -30,16 +30,17 @@
   NAN.NumberShow = (function() {
 
     function NumberShow(data) {
+      this.totalFrames = 50;
       this.time = 0;
       this.finished = false;
       this.getElement().show();
       this.getElement().animate({
-        opacity: "0.95"
+        opacity: "0.98"
       }, 400);
       this.getElementNumber().html(data.n);
       this.getElementScore().html(data.score.toString() + " points");
       if (data.descriptions === null || data.descriptions === "") {
-        data.descriptions = "Not Interesting";
+        data.descriptions = "平凡的数";
       }
       this.getElementDescriptions().html(data.descriptions);
     }
@@ -61,9 +62,11 @@
     };
 
     NumberShow.prototype.update = function() {
-      var _this = this;
+      var ratio,
+        _this = this;
       this.time += 1;
-      if (this.time > 50) {
+      ratio = (1 + Math.cos(this.time / this.totalFrames * Math.PI)) / 2;
+      if (this.time > this.totalFrames) {
         this.getElement().animate({
           opacity: "0.0"
         }, 400);

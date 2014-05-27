@@ -1,16 +1,17 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="utf-8">
     <link rel="stylesheet" type="text/css" href="nan.css" media="all" />
     <script type="text/javascript" src="javascript/jquery-1.11.1.min.js"></script>
-    <script type="text/javascript" src="color-conversion-algorithms.js"></script>
+    <script type="text/javascript" src="javascript/color-conversion-algorithms.js"></script>
     <script type="text/javascript" src="javascript/read-css.js"></script>
-    <script type="text/javascript" src="javascript/background-min.js" > </script>
-    <script type="text/javascript" src="javascript/analyzer-min.js" > </script>
-    <script type="text/javascript" src="javascript/mouse-min.js" > </script>
-    <script type="text/javascript" src="javascript/grid-min.js" > </script>
-    <script type="text/javascript" src="javascript/elements-min.js" > </script>
-    <script type="text/javascript" src="javascript/game-min.js" > </script>
+    <script type="text/javascript" src="javascript/background.js" > </script>
+    <script type="text/javascript" src="javascript/analyzer.js" charset="utf-8"> </script>
+    <script type="text/javascript" src="javascript/mouse.js" charset="utf-8" > </script>
+    <script type="text/javascript" src="javascript/grid.js" charset="utf-8" > </script>
+    <script type="text/javascript" src="javascript/elements.js" charset="utf-8" > </script>
+    <script type="text/javascript" src="javascript/game.js"  charset="utf-8"> </script>
 </head>
 <body>
   <div id="title" style="position:relative;">
@@ -18,11 +19,11 @@
     <div id = "title-2" class = "title" style="color: #669; line-height: 90%; font-size: 60.4px; text-shadow: 2px 1px 25px #aaf;">Not A Number</div>
     <div id = "title-3" class = "title" style="color: #669; line-height: 95%; font-size: 42.7px; text-shadow: 2px 1px 25px #aaf;">A Game for Nannan</div>
   </div>
-  <div id="container" class="board" style="margin: 30px auto">
+  <div id="container"  class="board" style="margin: 30px auto">
     <div id="number-show" class="board">
       <div id="number-show-number" class="number-show-box"> </div>
       <div id="number-show-score" class="number-show-box" style="color: #fff; text-shadow: 0px 0px 15px #000"> </div>
-      <div id="number-show-descriptions" class="number-show-box" style="margin: 0 auto; text-shadow: 0px 0px 10px #0ff"> </div>
+      <div id="number-show-descriptions" charset="UTF-8" class="number-show-box" style="margin: 0 auto; text-shadow: 0px 0px 10px #0ff"> </div>
     </div>
 
     <progress id="progressbar" value="100" max="100" style="position: absolute; left: 45px; top: 5px; width: 590px;"></progress> 
@@ -32,9 +33,13 @@
   </div>
   <div id="how-to-play" style="margin: 30px auto">
     <div style="width: 600px; margin: 0 auto; font-size: 20px; line-height: 120%; color: #55c; font-family: MyHelvetica">
+      如何玩：<br>
       How to play: <br>
+      连出你喜欢的数字<br>
       Link the grids to get your favourite numbers. <br>
+      性质越好的数字，得分越高<br>
       More special numbers are with more points! <br> 
+
     </div>
   </div>
 </body>

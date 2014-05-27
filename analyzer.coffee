@@ -11,7 +11,6 @@ class NAN.NumberSet
 			return {score: Math.max(1, n) / Math.max(1, @numbers.indexOf(n)), description: @description}
 		return {score: 0, description: null}
 
-
 class NAN.PrimeNumberSet extends NAN.NumberSet
 	isPrime: (n)->
 		n = parseInt(n)
@@ -27,22 +26,21 @@ class NAN.PrimeNumberSet extends NAN.NumberSet
 		return true
 
 	constructor: ()->
-		super()
-		@description = "Prime Number"
-		for i in [0...NAN.maximumNumber / 1000]
-			if @isPrime(i)
-				@numbers.push(i)
+		@description = "质数"
 
 	analyze: (n)->
-		result = super(n)
-		result.score *= 3
-		return result
-
+		n = parseInt(n)
+		if @isPrime(n)
+			result = {}
+			result.score = Math.floor(10 + Math.sqrt(n))
+			result.description = @description
+			return result
+		return null
 
 class NAN.PureOddNumberSet extends NAN.NumberSet
 	constructor: ()->
 		super()
-		@description = "Pure Odd Number"
+		@description = "纯奇数"
 
 	analyze: (n)->
 		for char in n
@@ -54,7 +52,7 @@ class NAN.PureOddNumberSet extends NAN.NumberSet
 class NAN.PureEvenNumberSet extends NAN.NumberSet
 	constructor: ()->
 		super()
-		@description = "Pure Even Number"
+		@description = "纯偶数"
 
 	analyze: (n)->
 		for char in n
@@ -67,7 +65,7 @@ class NAN.PureEvenNumberSet extends NAN.NumberSet
 class NAN.PureNumberSet extends NAN.NumberSet
 	constructor: ()->
 		super()
-		@description = "Pure Number"
+		@description = "纯数"
 
 	analyze: (n)->
 		for char in n
@@ -80,7 +78,7 @@ class NAN.PureNumberSet extends NAN.NumberSet
 class NAN.APNumberSet extends NAN.NumberSet
 	constructor: ()->
 		super()
-		@description = "AP Number"
+		@description = "等差数列数"
 
 	analyze: (n)->
 		return null if n.length < 3 
@@ -101,7 +99,7 @@ class NAN.APNumberSet extends NAN.NumberSet
 class NAN.WaveNumberSet extends NAN.NumberSet
 	constructor: ()->
 		super()
-		@description = "Wave Number"
+		@description = "波浪数"
 
 	analyze: (n)->
 		return null if n.length < 3 
@@ -119,7 +117,7 @@ class NAN.WaveNumberSet extends NAN.NumberSet
 class NAN.PowerOf2NumberSet extends NAN.NumberSet
 	constructor: ()->
 		super()
-		@description = "Power Of 2"
+		@description = "2的幂"
 		a = 1
 		while a < NAN.maximumNumber
 			@numbers.push(a)
@@ -128,7 +126,7 @@ class NAN.PowerOf2NumberSet extends NAN.NumberSet
 class NAN.CloseToSomePowerOf2NumberSet extends NAN.NumberSet
 	constructor: ()->
 		super()
-		@description = "Close To Some Power Of 2"
+		@description = "接近2的幂"
 		a = 16
 		while a < NAN.maximumNumber
 			@numbers.push(a + 1)
@@ -138,14 +136,14 @@ class NAN.CloseToSomePowerOf2NumberSet extends NAN.NumberSet
 class NAN.SquareNumberSet extends NAN.NumberSet
 	constructor: ()->
 		super()
-		@description = "Square Number"
+		@description = "平方数"
 		for a in [0...Math.floor(Math.sqrt(NAN.maximumNumber))]
 			@numbers.push(a * a)
 
 class NAN.CubicNumberSet extends NAN.NumberSet
 	constructor: ()->
 		super()
-		@description = "Cubic Number"
+		@description = "立方数"
 		for a in [0...NAN.maximumNumber]
 			@numbers.push(a * a * a) 
 			break if a * a * a >= NAN.maximumNumber 
@@ -154,7 +152,7 @@ class NAN.CubicNumberSet extends NAN.NumberSet
 class NAN.FactorialNumberSet extends NAN.NumberSet
 	constructor: ()->
 		super()
-		@description = "Factorial Number"
+		@description = "阶乘数"
 		a = 1
 		for i in [1..1000]
 			a = a * i
@@ -164,7 +162,7 @@ class NAN.FactorialNumberSet extends NAN.NumberSet
 class NAN.HundredNumberSet extends NAN.NumberSet
 	constructor: ()->
 		super()
-		@description = "Ends in 0s"
+		@description = "以0结尾"
 		a = 1
 		for i in [1..1000]
 			a = a * 10
@@ -192,7 +190,7 @@ class NAN.AutomorphicNumberNumberSet extends NAN.NumberSet
 class NAN.FibonacciNumberSet extends NAN.NumberSet
 	constructor: ()->
 		super()
-		@description = "Fibonacci Number"
+		@description = "Fibonacci数"
 		a = 0
 		b = 1
 		for i in [1..1000]
@@ -204,7 +202,7 @@ class NAN.FibonacciNumberSet extends NAN.NumberSet
 
 class NAN.PalindromicNumberSet extends NAN.NumberSet
 	constructor: ()->
-		@description = "Palindromic Number"
+		@description = "回文数"
 
 	analyze: (n)->
 		if n.split("").reverse().join("") == n

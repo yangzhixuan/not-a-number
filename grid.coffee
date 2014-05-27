@@ -1,3 +1,30 @@
+@hsvString = (h, s, v) ->
+    color = hsvToRgb(h, s, v);
+    return colorToString([Math.floor(color[0]), Math.floor(color[1]), Math.floor(color[2])])
+
+
+@randomColor = ->
+    color = hsvToRgb(Math.random() * 0.1 + 0.4, 0.8, 0.9);
+    return [Math.floor(color[0]), Math.floor(color[1]), Math.floor(color[2])]
+
+@colorToString = (color) ->
+    return "rgb(#{color[0]}, #{color[1]}, #{color[2]})"
+
+
+@randomColorString = ->
+    color = randomColor()
+    return colorToString(color)
+
+@clamp = (a) ->
+    return Math.max(Math.min(a, 1.0), 0.0) 
+
+@mediate = (left, right, rate)->
+    return left + (right - left) * rate
+
+@colorToString = (color)->
+    return "hsla(#{(color.h - Math.floor(color.h)) * 360}, #{clamp(color.s) * 100}%, #{clamp(color.l) * 100}%, 1.0)"
+
+
 class NAN.Grid 
     constructor: (@x, @y, @game)->
         @mouse = @game.mouse
@@ -8,6 +35,8 @@ class NAN.Grid
         @value = Math.floor(Math.random() * 10)
         @selected = false
 
+        @width = $.game.gridWidth
+        @height = $.game.gridHeight
         @color = @getColor() 
         @remainedTime = -1
 
@@ -21,6 +50,8 @@ class NAN.Grid
         @x = x
         @y = y
 
+    testInside: (x, y)->
+        return @position.x <= x and x <= @position.x + @height and @position.y <= y and y <= @position.y + @width
         
     getColor: ()->
         color = {}
@@ -40,7 +71,6 @@ class NAN.Grid
 
     getPosition: ()->
         originPosition = {x: @game.gridXOffset + @x * @game.gridHeight, y: @game.gridYOffset + @y * @game.gridWidth}
-#        console.log(@game.gridYOffset)
         if @cleaned()
             rate = 0.5 + -Math.cos(Math.PI * (30 - @remainedTime) / 30) / 2
             x = mediate(originPosition.x, @game.score.position.x, rate)
@@ -115,5 +145,4 @@ class NAN.Grid
 
     mouseUp: ()->
         if @mouse.state == "select"
-            @mouse.addGrid(this)
             @mouse.endPath()

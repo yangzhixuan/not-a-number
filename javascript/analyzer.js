@@ -55,21 +55,19 @@
     };
 
     function PrimeNumberSet() {
-      var i, _i, _ref;
-      PrimeNumberSet.__super__.constructor.call(this);
-      this.description = "Prime Number";
-      for (i = _i = 0, _ref = NAN.maximumNumber / 1000; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
-        if (this.isPrime(i)) {
-          this.numbers.push(i);
-        }
-      }
+      this.description = "质数";
     }
 
     PrimeNumberSet.prototype.analyze = function(n) {
       var result;
-      result = PrimeNumberSet.__super__.analyze.call(this, n);
-      result.score *= 3;
-      return result;
+      n = parseInt(n);
+      if (this.isPrime(n)) {
+        result = {};
+        result.score = Math.floor(10 + Math.sqrt(n));
+        result.description = this.description;
+        return result;
+      }
+      return null;
     };
 
     return PrimeNumberSet;
@@ -82,7 +80,7 @@
 
     function PureOddNumberSet() {
       PureOddNumberSet.__super__.constructor.call(this);
-      this.description = "Pure Odd Number";
+      this.description = "纯奇数";
     }
 
     PureOddNumberSet.prototype.analyze = function(n) {
@@ -110,7 +108,7 @@
 
     function PureEvenNumberSet() {
       PureEvenNumberSet.__super__.constructor.call(this);
-      this.description = "Pure Even Number";
+      this.description = "纯偶数";
     }
 
     PureEvenNumberSet.prototype.analyze = function(n) {
@@ -138,7 +136,7 @@
 
     function PureNumberSet() {
       PureNumberSet.__super__.constructor.call(this);
-      this.description = "Pure Number";
+      this.description = "纯数";
     }
 
     PureNumberSet.prototype.analyze = function(n) {
@@ -166,7 +164,7 @@
 
     function APNumberSet() {
       APNumberSet.__super__.constructor.call(this);
-      this.description = "AP Number";
+      this.description = "等差数列数";
     }
 
     APNumberSet.prototype.analyze = function(n) {
@@ -205,7 +203,7 @@
 
     function WaveNumberSet() {
       WaveNumberSet.__super__.constructor.call(this);
-      this.description = "Wave Number";
+      this.description = "波浪数";
     }
 
     WaveNumberSet.prototype.analyze = function(n) {
@@ -242,7 +240,7 @@
     function PowerOf2NumberSet() {
       var a;
       PowerOf2NumberSet.__super__.constructor.call(this);
-      this.description = "Power Of 2";
+      this.description = "2的幂";
       a = 1;
       while (a < NAN.maximumNumber) {
         this.numbers.push(a);
@@ -261,7 +259,7 @@
     function CloseToSomePowerOf2NumberSet() {
       var a;
       CloseToSomePowerOf2NumberSet.__super__.constructor.call(this);
-      this.description = "Close To Some Power Of 2";
+      this.description = "接近2的幂";
       a = 16;
       while (a < NAN.maximumNumber) {
         this.numbers.push(a + 1);
@@ -281,7 +279,7 @@
     function SquareNumberSet() {
       var a, _i, _ref;
       SquareNumberSet.__super__.constructor.call(this);
-      this.description = "Square Number";
+      this.description = "平方数";
       for (a = _i = 0, _ref = Math.floor(Math.sqrt(NAN.maximumNumber)); 0 <= _ref ? _i < _ref : _i > _ref; a = 0 <= _ref ? ++_i : --_i) {
         this.numbers.push(a * a);
       }
@@ -298,7 +296,7 @@
     function CubicNumberSet() {
       var a, _i, _ref;
       CubicNumberSet.__super__.constructor.call(this);
-      this.description = "Cubic Number";
+      this.description = "立方数";
       for (a = _i = 0, _ref = NAN.maximumNumber; 0 <= _ref ? _i < _ref : _i > _ref; a = 0 <= _ref ? ++_i : --_i) {
         this.numbers.push(a * a * a);
         if (a * a * a >= NAN.maximumNumber) {
@@ -318,7 +316,7 @@
     function FactorialNumberSet() {
       var a, i, _i;
       FactorialNumberSet.__super__.constructor.call(this);
-      this.description = "Factorial Number";
+      this.description = "阶乘数";
       a = 1;
       for (i = _i = 1; _i <= 1000; i = ++_i) {
         a = a * i;
@@ -340,7 +338,7 @@
     function HundredNumberSet() {
       var a, b, i, _i, _j;
       HundredNumberSet.__super__.constructor.call(this);
-      this.description = "Ends in 0s";
+      this.description = "以0结尾";
       a = 1;
       for (i = _i = 1; _i <= 1000; i = ++_i) {
         a = a * 10;
@@ -388,7 +386,7 @@
     function FibonacciNumberSet() {
       var a, b, c, i, _i;
       FibonacciNumberSet.__super__.constructor.call(this);
-      this.description = "Fibonacci Number";
+      this.description = "Fibonacci数";
       a = 0;
       b = 1;
       for (i = _i = 1; _i <= 1000; i = ++_i) {
@@ -411,7 +409,7 @@
     __extends(PalindromicNumberSet, _super);
 
     function PalindromicNumberSet() {
-      this.description = "Palindromic Number";
+      this.description = "回文数";
     }
 
     PalindromicNumberSet.prototype.analyze = function(n) {

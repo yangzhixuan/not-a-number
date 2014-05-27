@@ -1,29 +1,3 @@
-@hsvString = (h, s, v) ->
-    color = hsvToRgb(h, s, v);
-    return colorToString([Math.floor(color[0]), Math.floor(color[1]), Math.floor(color[2])])
-
-
-@randomColor = ->
-    color = hsvToRgb(Math.random() * 0.1 + 0.4, 0.8, 0.9);
-    return [Math.floor(color[0]), Math.floor(color[1]), Math.floor(color[2])]
-
-@colorToString = (color) ->
-    return "rgb(#{color[0]}, #{color[1]}, #{color[2]})"
-
-
-@randomColorString = ->
-    color = randomColor()
-    return colorToString(color)
-
-@clamp = (a) ->
-    return Math.max(Math.min(a, 1.0), 0.0) 
-
-@mediate = (left, right, rate)->
-    return left + (right - left) * rate
-
-@colorToString = (color)->
-    return "hsla(#{(color.h - Math.floor(color.h)) * 360}, #{clamp(color.s) * 100}%, #{clamp(color.l) * 100}%, 1.0)"
-
 
 class NAN.Game
     constructor: ->
@@ -32,9 +6,9 @@ class NAN.Game
         @score = new NAN.Score
         @gridId = 0
         @init()
-        @gridMargin = 4
-        @containerHeight = 680
-        @containerWidth = 680
+        @gridMargin = 2
+        @containerHeight = 650
+        @containerWidth = 600
         @numGridRows = 6
         @numGridColumns = 6
         @numGrids = @numGridColumns * @numGridRows
@@ -56,12 +30,53 @@ class NAN.Game
         @gridQueue = []
         for i in [0...@numGridRows]
             @grids[i] = []
+        @initTouchScreen()
+
+    initTouchScreen: ()->
+        $("#container").on("touchstart",
+            (e)=>
+                grid = @getEventGrid(e)
+                if grid
+                    grid.mouseDown()
+                return false
+        )
+        $("#container").on("touchmove",
+            (e)=>
+                grid = @getEventGrid(e)
+                if grid
+                    grid.mouseOver()
+                console.log(grid)
+                return false
+        )
+        $("#container").on("touchend",
+            (e)=>
+                @mouse.endPath()
+                return false
+        )
+
+
+    getEventPosition: (e)->
+        y = e.originalEvent.targetTouches[0].pageX - $("#container").offset().left
+        x = e.originalEvent.targetTouches[0].pageY - $("#container").offset().top
+        return {x: x, y : y}
+
+    getEventGrid: (e)->
+        pos = @getEventPosition(e)
+        return @getGridAt(pos.x, pos.y)
+
 
     newGrid: (x, y)->
         grid = new NAN.Grid(x, y, this)
         @grids[x][y] = grid
         grid.init()
         @gridQueue.push(grid)
+
+    getGridAt: (x, y)->
+        for grid in @gridQueue
+            if grid.testInside(x, y)
+                return grid
+        return null
+
 
     init: ->
         @time = 0
@@ -123,7 +138,7 @@ class NAN.Game
             @nextFrame()
         @updateGrids()    
         @score.update()
-        @background.update()
+#        @background.update()
         @time += 1
         if $.numberShow
             $.numberShow.update()
