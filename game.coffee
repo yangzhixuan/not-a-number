@@ -2,19 +2,19 @@
 class NAN.Game
     constructor: ->
         $.backgroundBlockId = 0
-        @background = new NAN.Background
+#        @background = new NAN.Background
         @score = new NAN.Score
         @gridId = 0
         @init()
         @gridMargin = 2
-        @containerHeight = 650
+        @containerHeight = 670
         @containerWidth = 600
         @numGridRows = 6
         @numGridColumns = 6
         @numGrids = @numGridColumns * @numGridRows
         @gridWidth = (@containerWidth - 100) / @numGridRows
         @gridHeight = @gridWidth
-        @gridXOffset = 90
+        @gridXOffset = 110
         @gridYOffset = (@containerWidth - @numGridColumns * @gridWidth) / 2
         console.log(@gridWidth)
         setStyleRuleValue(".board", "width", "#{@containerWidth}px")
@@ -123,17 +123,11 @@ class NAN.Game
 
     update: ->
         @paused = @getPaused()
-        if @time < @numGridRows
-            x = @time
-            for y in [0...@numGridColumns]
-                @newGrid(x, y)
-                ###
-                grid.getElement().mouseover( ->
-                    $(this).hide(400, ->
-                        $(this).show(300)
-                    )
-                )
-                ###
+        if @time < @numGridRows * 10
+            if @time % 10 == 0
+                x = @time / 10
+                for y in [0...@numGridColumns]
+                    @newGrid(x, y)
         else
             @nextFrame()
         @updateGrids()    
@@ -150,7 +144,7 @@ class NAN.Game
         $("#progressbar").attr("value", "#{@timeLeft}")
 
 $(document).ready( ->
-    timeStep = 0
+    timeStep = 1.5
     $("#number-show").hide()
     $("#number-show").css("opacity", "0.0")
     $.analyzer = new window.NAN.Analyzer

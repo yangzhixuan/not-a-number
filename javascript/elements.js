@@ -30,19 +30,26 @@
   NAN.NumberShow = (function() {
 
     function NumberShow(data) {
+      var _this = this;
       this.totalFrames = 50;
       this.time = 0;
       this.finished = false;
       this.getElement().show();
       this.getElement().animate({
-        opacity: "0.98"
-      }, 400);
+        opacity: "0.90"
+      }, 200);
       this.getElementNumber().html(data.n);
       this.getElementScore().html(data.score.toString() + " points");
       if (data.descriptions === null || data.descriptions === "") {
         data.descriptions = "平凡的数";
       }
       this.getElementDescriptions().html(data.descriptions);
+      this.getElement().click(function() {
+        return _this.onClick();
+      });
+      this.getElement().on("touchstart", function() {
+        return _this.onClick();
+      });
     }
 
     NumberShow.prototype.getElement = function() {
@@ -61,20 +68,24 @@
       return $("#number-show-descriptions");
     };
 
-    NumberShow.prototype.update = function() {
-      var ratio,
-        _this = this;
-      this.time += 1;
-      ratio = (1 + Math.cos(this.time / this.totalFrames * Math.PI)) / 2;
-      if (this.time > this.totalFrames) {
-        this.getElement().animate({
-          opacity: "0.0"
-        }, 400);
-        setTimeout(function() {
-          return _this.getElement().hide(200);
-        }, 400);
-        return this.finished = true;
+    NumberShow.prototype.onClick = function() {
+      var _this = this;
+      if (this.finished) {
+        return;
       }
+      this.getElement().animate({
+        opacity: "0.0"
+      }, 200);
+      setTimeout(function() {
+        return _this.getElement().hide();
+      }, 200);
+      return this.finished = true;
+    };
+
+    NumberShow.prototype.update = function() {
+      var ratio;
+      this.time += 1;
+      return ratio = (1 + Math.cos(this.time / this.totalFrames * Math.PI)) / 2;
     };
 
     return NumberShow;

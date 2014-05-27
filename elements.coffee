@@ -21,13 +21,21 @@ class NAN.NumberShow
         @time = 0
         @finished = false 
         @getElement().show()
-        @getElement().animate({opacity: "0.98"}, 400)
+        @getElement().animate({opacity: "0.90"}, 200)
         @getElementNumber().html(data.n)
         @getElementScore().html(data.score.toString() + " points")
         if data.descriptions == null or data.descriptions == ""
             data.descriptions = "平凡的数"
         @getElementDescriptions().html(data.descriptions)
-
+        @getElement().click(
+            =>
+                @onClick()
+        )
+        @getElement().on(
+            "touchstart",
+            =>
+                @onClick()
+        )
     getElement: ->
         $("#number-show")
 
@@ -41,15 +49,18 @@ class NAN.NumberShow
     getElementDescriptions: ->
         $("#number-show-descriptions")
 
+    onClick: ()->
+        if @finished
+            return
+        @getElement().animate({opacity: "0.0"}, 200)
+        setTimeout(
+            =>
+                @getElement().hide()
+            , 200
+        )
+        @finished = true
+
     update: ->
         @time += 1
         ratio = (1 + Math.cos(@time / @totalFrames * Math.PI)) / 2
 #        $("#container").css("-webkit-transform", "perspective(700px) rotateY(#{ratio * 180}deg)")
-        if @time > @totalFrames
-            @getElement().animate({opacity: "0.0"}, 400)
-            setTimeout(
-                =>
-                    @getElement().hide(200)
-                , 400
-            )
-            @finished = true

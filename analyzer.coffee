@@ -46,7 +46,7 @@ class NAN.PureOddNumberSet extends NAN.NumberSet
 		for char in n
 			if parseInt(char) % 2 == 0
 				return null 
-		result = {score: n.length, description: @description}
+		result = {score: Math.max(0, n.length - 4), description: @description}
 		return result
 
 class NAN.PureEvenNumberSet extends NAN.NumberSet
@@ -58,7 +58,7 @@ class NAN.PureEvenNumberSet extends NAN.NumberSet
 		for char in n
 			if parseInt(char) % 2 == 1
 				return null 
-		result = {score: n.length, description: @description}
+		result = {score: Math.max(0, n.length - 4), description: @description}
 		return result
 
 
@@ -71,7 +71,7 @@ class NAN.PureNumberSet extends NAN.NumberSet
 		for char in n
 			if char != n[0]
 				return null
-		result = {score: n.length, description: @description}
+		result = {score: Math.max(0, n.length - 3), description: @description}
 		return result
 
 
@@ -206,7 +206,7 @@ class NAN.PalindromicNumberSet extends NAN.NumberSet
 
 	analyze: (n)->
 		if n.split("").reverse().join("") == n
-			return {score: n.length, description: @description}
+			return {score: Math.max(n.length - 3, 0), description: @description}
 		return null
 
 class NAN.Analyzer

@@ -9,9 +9,10 @@ class NAN.Mouse
        # console.log(@path.length)
         if @path.length < 2
             result = false
-        for i in [0...(@path.length - 1)]
-            if @path[i].grid.isConnecting(@path[i + 1].grid) == false
-                result = false
+        if @path.length > 0
+            for i in [0...(@path.length - 1)]
+                if @path[i].grid.isConnecting(@path[i + 1].grid) == false
+                    result = false
         return result
 
     evaluatePath: ()->
@@ -32,12 +33,15 @@ class NAN.Mouse
         if @checkPath()
             numberString = @evaluatePath()
             result = $.analyzer.analyze(numberString)
-            $.numberShow = new NAN.NumberShow
-                n: numberString,
-                descriptions: result.descriptions.filter(
+            descriptions = result.descriptions.filter(
                     (desc)->
                         return desc != null and desc != ""
-                    ).join("<br>"),
+                    ).join("<br>")
+            if result.score == 0
+                descriptions = ""
+            $.numberShow = new NAN.NumberShow
+                n: numberString,
+                descriptions: descriptions,
                 score: result.score
             
             $.game.score.addValue(result.score)

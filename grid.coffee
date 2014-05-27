@@ -65,7 +65,7 @@ class NAN.Grid
             color.h += 0.1
             color.l = 0.6
         else
-            color.l = @value * 0.01 + 0.3
+            color.l = @value * 0.01 + 0.4
 
         return color 
 
@@ -92,7 +92,7 @@ class NAN.Grid
         @getElement().css("background-color", colorToString(@color))
         @getElement().append("<div class='number'>#{@value}</div>")
         @getElement().hide()
-        @getElement().show(500)
+        @getElement().show(200)
         @getElement().mouseover(
             =>
                 @mouseOver()

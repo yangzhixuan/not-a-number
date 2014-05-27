@@ -14,9 +14,11 @@
       if (this.path.length < 2) {
         result = false;
       }
-      for (i = _i = 0, _ref = this.path.length - 1; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
-        if (this.path[i].grid.isConnecting(this.path[i + 1].grid) === false) {
-          result = false;
+      if (this.path.length > 0) {
+        for (i = _i = 0, _ref = this.path.length - 1; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
+          if (this.path[i].grid.isConnecting(this.path[i + 1].grid) === false) {
+            result = false;
+          }
         }
       }
       return result;
@@ -40,18 +42,22 @@
     };
 
     Mouse.prototype.endPath = function() {
-      var i, node, numberString, result, _i, _j, _len, _ref, _ref1;
+      var descriptions, i, node, numberString, result, _i, _j, _len, _ref, _ref1;
       if (this.state === "none") {
         return;
       }
       if (this.checkPath()) {
         numberString = this.evaluatePath();
         result = $.analyzer.analyze(numberString);
+        descriptions = result.descriptions.filter(function(desc) {
+          return desc !== null && desc !== "";
+        }).join("<br>");
+        if (result.score === 0) {
+          descriptions = "";
+        }
         $.numberShow = new NAN.NumberShow({
           n: numberString,
-          descriptions: result.descriptions.filter(function(desc) {
-            return desc !== null && desc !== "";
-          }).join("<br>"),
+          descriptions: descriptions,
           score: result.score
         });
         $.game.score.addValue(result.score);

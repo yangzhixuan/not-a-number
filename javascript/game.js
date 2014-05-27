@@ -6,19 +6,18 @@
     function Game() {
       var i, _i, _ref;
       $.backgroundBlockId = 0;
-      this.background = new NAN.Background;
       this.score = new NAN.Score;
       this.gridId = 0;
       this.init();
       this.gridMargin = 2;
-      this.containerHeight = 650;
+      this.containerHeight = 670;
       this.containerWidth = 600;
       this.numGridRows = 6;
       this.numGridColumns = 6;
       this.numGrids = this.numGridColumns * this.numGridRows;
       this.gridWidth = (this.containerWidth - 100) / this.numGridRows;
       this.gridHeight = this.gridWidth;
-      this.gridXOffset = 90;
+      this.gridXOffset = 110;
       this.gridYOffset = (this.containerWidth - this.numGridColumns * this.gridWidth) / 2;
       console.log(this.gridWidth);
       setStyleRuleValue(".board", "width", "" + this.containerWidth + "px");
@@ -186,18 +185,12 @@
     Game.prototype.update = function() {
       var x, y, _i, _ref;
       this.paused = this.getPaused();
-      if (this.time < this.numGridRows) {
-        x = this.time;
-        for (y = _i = 0, _ref = this.numGridColumns; 0 <= _ref ? _i < _ref : _i > _ref; y = 0 <= _ref ? ++_i : --_i) {
-          this.newGrid(x, y);
-          /*
-                          grid.getElement().mouseover( ->
-                              $(this).hide(400, ->
-                                  $(this).show(300)
-                              )
-                          )
-          */
-
+      if (this.time < this.numGridRows * 10) {
+        if (this.time % 10 === 0) {
+          x = this.time / 10;
+          for (y = _i = 0, _ref = this.numGridColumns; 0 <= _ref ? _i < _ref : _i > _ref; y = 0 <= _ref ? ++_i : --_i) {
+            this.newGrid(x, y);
+          }
         }
       } else {
         this.nextFrame();
@@ -223,7 +216,7 @@
 
   $(document).ready(function() {
     var timeStep;
-    timeStep = 0;
+    timeStep = 1.5;
     $("#number-show").hide();
     $("#number-show").css("opacity", "0.0");
     $.analyzer = new window.NAN.Analyzer;

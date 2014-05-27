@@ -84,7 +84,7 @@
         color.h += 0.1;
         color.l = 0.6;
       } else {
-        color.l = this.value * 0.01 + 0.3;
+        color.l = this.value * 0.01 + 0.4;
       }
       return color;
     };
@@ -124,7 +124,7 @@
       this.getElement().css("background-color", colorToString(this.color));
       this.getElement().append("<div class='number'>" + this.value + "</div>");
       this.getElement().hide();
-      this.getElement().show(500);
+      this.getElement().show(200);
       this.getElement().mouseover(function() {
         _this.mouseOver();
         return false;
