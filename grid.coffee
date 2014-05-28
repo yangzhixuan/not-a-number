@@ -22,11 +22,16 @@
     return left + (right - left) * rate
 
 @colorToString = (color)->
-    return "hsla(#{(color.h - Math.floor(color.h)) * 360}, #{clamp(color.s) * 100}%, #{clamp(color.l) * 100}%, 1.0)"
+    return "hsl(#{(color.h - Math.floor(color.h)) * 360}, #{clamp(color.s) * 100}%, #{clamp(color.l) * 100}%)"
+
+
+@getTime = ()->
+    date = new Date()
+    return date.getTime() 
 
 
 class NAN.Grid 
-    constructor: (@x, @y, @game)->
+    constructor: (@x, @y, @game, show)->
         @mouse = @game.mouse
         @id = @game.gridId
         @deltaX = 0
@@ -39,6 +44,28 @@ class NAN.Grid
         @height = $.game.gridHeight
         @color = @getColor() 
         @remainedTime = -1
+        $("#container").append("<div class='square' id='square-#{@id}'></div>")
+        @position = @getPosition()
+        @getElement().css("background-color", colorToString(@color))
+        @getElement().append("<div class='number'>#{@value}</div>")
+        @getElement().css("opacity", 0)
+        @show() if show
+        @getElement().mouseover(
+            =>
+                @mouseOver()
+                return false;
+        )
+        @getElement().mousedown(
+            =>
+                @mouseDown()
+                return false;
+        )
+        @getElement().mouseup(
+            =>
+                @mouseUp()
+                return false;
+        )
+        @update()
 
     cleaned: ()->
         return @remainedTime >= 0
@@ -55,18 +82,13 @@ class NAN.Grid
         
     getColor: ()->
         color = {}
-        color.s = 0.5
+        color.h = 0.35 + @value * 0.000
         if @selected
-            color.h = 0.3
+            color.s = 0.6
+            color.l = 0.9
         else
-            color.h = 0.8
-
-        if @value == "NAN"
-            color.h += 0.1
-            color.l = 0.6
-        else
-            color.l = @value * 0.01 + 0.4
-
+            color.s = 0.54
+            color.l = 0.7
         return color 
 
     getPosition: ()->
@@ -86,29 +108,9 @@ class NAN.Grid
         neighbouring = (Math.abs(grid.x - @x) + Math.abs(grid.y - @y) == 1)
         return neighbouring
 
-    init: ()->
-        $("#container").append("<div class='square' id='square-#{@id}'></div>")
-        @position = @getPosition()
-        @getElement().css("background-color", colorToString(@color))
-        @getElement().append("<div class='number'>#{@value}</div>")
-        @getElement().hide()
-        @getElement().show(200)
-        @getElement().mouseover(
-            =>
-                @mouseOver()
-                return false;
-        )
-        @getElement().mousedown(
-            =>
-                @mouseDown()
-                return false;
-        )
-        @getElement().mouseup(
-            =>
-                @mouseUp()
-                return false;
-        )
-        @update()
+    show: ()->
+        @getElement().show(0)
+        @getElement().animate({opacity: 1.0}, 400)
 
     update: ->
         if @cleaned()

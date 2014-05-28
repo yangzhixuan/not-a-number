@@ -32,12 +32,19 @@
   };
 
   this.colorToString = function(color) {
-    return "hsla(" + ((color.h - Math.floor(color.h)) * 360) + ", " + (clamp(color.s) * 100) + "%, " + (clamp(color.l) * 100) + "%, 1.0)";
+    return "hsl(" + ((color.h - Math.floor(color.h)) * 360) + ", " + (clamp(color.s) * 100) + "%, " + (clamp(color.l) * 100) + "%)";
+  };
+
+  this.getTime = function() {
+    var date;
+    date = new Date();
+    return date.getTime();
   };
 
   NAN.Grid = (function() {
 
-    function Grid(x, y, game) {
+    function Grid(x, y, game, show) {
+      var _this = this;
       this.x = x;
       this.y = y;
       this.game = game;
@@ -52,6 +59,27 @@
       this.height = $.game.gridHeight;
       this.color = this.getColor();
       this.remainedTime = -1;
+      $("#container").append("<div class='square' id='square-" + this.id + "'></div>");
+      this.position = this.getPosition();
+      this.getElement().css("background-color", colorToString(this.color));
+      this.getElement().append("<div class='number'>" + this.value + "</div>");
+      this.getElement().css("opacity", 0);
+      if (show) {
+        this.show();
+      }
+      this.getElement().mouseover(function() {
+        _this.mouseOver();
+        return false;
+      });
+      this.getElement().mousedown(function() {
+        _this.mouseDown();
+        return false;
+      });
+      this.getElement().mouseup(function() {
+        _this.mouseUp();
+        return false;
+      });
+      this.update();
     }
 
     Grid.prototype.cleaned = function() {
@@ -74,17 +102,13 @@
     Grid.prototype.getColor = function() {
       var color;
       color = {};
-      color.s = 0.5;
+      color.h = 0.35 + this.value * 0.000;
       if (this.selected) {
-        color.h = 0.3;
+        color.s = 0.6;
+        color.l = 0.9;
       } else {
-        color.h = 0.8;
-      }
-      if (this.value === "NAN") {
-        color.h += 0.1;
-        color.l = 0.6;
-      } else {
-        color.l = this.value * 0.01 + 0.4;
+        color.s = 0.54;
+        color.l = 0.7;
       }
       return color;
     };
@@ -117,27 +141,11 @@
       return neighbouring;
     };
 
-    Grid.prototype.init = function() {
-      var _this = this;
-      $("#container").append("<div class='square' id='square-" + this.id + "'></div>");
-      this.position = this.getPosition();
-      this.getElement().css("background-color", colorToString(this.color));
-      this.getElement().append("<div class='number'>" + this.value + "</div>");
-      this.getElement().hide();
-      this.getElement().show(200);
-      this.getElement().mouseover(function() {
-        _this.mouseOver();
-        return false;
-      });
-      this.getElement().mousedown(function() {
-        _this.mouseDown();
-        return false;
-      });
-      this.getElement().mouseup(function() {
-        _this.mouseUp();
-        return false;
-      });
-      return this.update();
+    Grid.prototype.show = function() {
+      this.getElement().show(0);
+      return this.getElement().animate({
+        opacity: 1.0
+      }, 400);
     };
 
     Grid.prototype.update = function() {

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <title> Not A Number</title>
     <meta charset="utf-8">
     <link rel="stylesheet" type="text/css" href="nan.css" media="all" />
     <script type="text/javascript" src="javascript/jquery-1.11.1.min.js"></script>
@@ -15,29 +16,39 @@
 </head>
 <body>
   <div id="title" style="position:relative;">
-    <div id = "title-1" class = "title" style="color: #88a; line-height: 80%; font-size: 192px; margin: 20px 0 0 0; text-shadow: 4px 4px 15px #aad">NAN</div>
-    <div id = "title-2" class = "title" style="color: #669; line-height: 90%; font-size: 60.4px; text-shadow: 2px 1px 25px #aaf;">Not A Number</div>
-    <div id = "title-3" class = "title" style="color: #669; line-height: 95%; font-size: 42.7px; text-shadow: 2px 1px 25px #aaf;">A Game for Nannan</div>
+    <div id = "title-1" class = "title" style="color: #7a7; line-height: 80%; font-size: 192px; margin: 20px 0 0 0; text-shadow: 3px 3px 10px hsla(0, 0%, 0%, 0.2)">NAN</div>
+    <div id = "title-2" class = "title" style="color: #383; line-height: 90%; font-size: 60.4px; text-shadow: 3px 3px 10px hsla(0, 0%, 0%, 0.2);">Not A Number</div>
+    <div id = "title-3" class = "title" style="color: #585; line-height: 95%; font-size: 42.7px; text-shadow: 3px 3px 10px hsla(0, 0%, 0%, 0.2);">A Game for Nannan</div>
   </div>
   <div id="container"  class="board" style="margin: 30px auto">
     <div id="number-show" class="board">
       <div id="number-show-number" class="number-show-box"> </div>
-      <div id="number-show-score" class="number-show-box" style="color: #fff; text-shadow: 0px 0px 15px #000"> </div>
-      <div id="number-show-descriptions" charset="UTF-8" class="number-show-box" style="margin: 0 auto; text-shadow: 0px 0px 10px #0ff"> </div>
+      <div id="number-show-score" class="number-show-box" style="color: #595;"> </div>
+      <div id="number-show-descriptions" charset="UTF-8" class="number-show-box" style="margin: 0 auto;"> </div>
       <div id="number-show-hint" charset="UTF-8"> Click/Touch to continue...</div>
     </div>
-    <div id="score">
+    <div class="score" style="z-index: 4000; top: 0px">
       0
     </div>
-        <progress id="progressbar" value="100" max="100" style="position: absolute; left: 45px; top: 5px; width: 510px;"></progress> 
+
+    <div id="game-over-screen" class="board" style="z-index: 5001; background-color: #aaf" onmouseclick="location.reload()">
+      <div style="font-size:70px; margin: 100px auto; text-align: center">Game Over</div>
+      <div style="font-size:50px; margin: 100px auto; text-align: center">Your score is </div>
+      <div class="score" style="top:400px">
+        0
+      </div>
+
+    </div>
+
+
+    <progress id="progressbar" value="100" max="100" style="position: absolute; left:53px; top: 75px; width: 496px;"></progress> 
+
 
   </div>
-  <div id="how-to-play" style="margin: 30px auto">
-    <div style="width: 600px; margin: 0 auto; font-size: 20px; line-height: 120%; color: #55c; font-family: MyHelvetica">
-      如何玩：<br>
-      How to play: <br>
-      连出你喜欢的数字<br>
-      Link the grids to get your favourite numbers. <br>
+  <div id="how-to-play" style="margin: 30px auto; display: none;">
+    <div style="width: 600px; margin: 0 auto; font-size: 20px; line-height: 120%; color: #282; text-align: center">
+      在一分钟内连出你喜欢的数字<br>
+      Link the grids to get your favourite numbers in 1 minute. <br>
       性质越好的数字，得分越高<br>
       More special numbers are with more points! <br> 
     </div>

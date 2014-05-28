@@ -41,4 +41,6 @@ Sqrt(2)
 
 SQF
 
-只要有23人，这群人里有两人同一天生日的机率就会大于50％
+终止条件
+选框
+www.subtlepatterns.com

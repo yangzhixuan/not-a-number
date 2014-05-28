@@ -1,6 +1,7 @@
 body {
     background-color: #eee;
     -webkit-user-select: none;
+    background: url(background.png) repeat
 }
 
 #heading {
@@ -13,66 +14,63 @@ body {
     width: 60px;
     height: 60px;
     margin: 2px;
-    box-shadow: 3px 3px 5px #808;
+    box-shadow: 2px 3px 5px hsla(0, 0%, 0%, 0.4);
     text-align: center;
     border-radius: 20%;
-    -webkit-transition: border-radius 200ms; /* For Safari 3.1 to 6.0 */
+    -webkit-transition: border-radius 200ms;
     transition: border-radius 200ms;
 }
 
- @media screen and (min-device-width : 1024px) {
-    .square:hover {
-        border-radius: 50%;
-    }
-
-
- }
+/*
+@media screen and (min-device-width : 1024px) {
+}*/
+.square:hover {
+   border-radius: 50%;
+}
 
 
 .number {
-    color: hsl(196, 38%, 80%);
+    color: rgb(0, 127, 100);
+    visibility: visible;
     font-family: MyHelvetica;
     text-align: center;
     vertical-align: middle;
-//    text-shadow: 0 0 5px #88f;
     line-height: 56px;
     font-weight: bold;
     font-size: 50px;
     cursor: default;
 }
 
-#score {
-    color: rgb(255, 0, 128);
-    font-family: MyHeveltica;
+.score {
+    color: #595;
+    font-family: MyHelvetica;
     position: absolute;
     left: 0px;
     top: 0px;
     height: 120px;
     width: 600px;
-    text-shadow: 0 0 5px #88f;
     font-size: 70px;
     text-align: center;
     vertical-align: middle;
-    line-height: 120px;
+    line-height: 70px;
 }
 
 @font-face {
     font-family: MyHelvetica;
-    src: url('Helvetica/helvetica-light.otf');
+    src: url("Helvetica/helvetica-light.otf");
 }
 
 .board {
     height: 600px;
     width: 680px;
+    background: url(skulls.png) repeat
 }
 
 #container {
-    background-color: #ccf;
     margin: auto auto auto auto;
-    box-shadow: 0px 0px 20px #f0f;
+    box-shadow: 0px 0px 20px hsla(0, 0%, 0%, 0.4);
     position: relative;
     opacity: 0.9
-    numGridRows: 6;
 }
 
 .title {
@@ -95,8 +93,8 @@ body {
     z-index: 5000;
 }
 
-. {
-    font-family: MyHeveltica;
+div {
+    font-family: MyHelvetica;
 }
 
 .number-show-box {
@@ -105,17 +103,50 @@ body {
 
 #number-show-number {
     font-size: 6.6em;
-    color: #fff;
-    text-shadow: 0 0 15px #000;
+    color: #060;
 }
-
+ 
 #number-show-hint {
     font-size: 1.6em;
-    color: #fff;
+    color: #060;
     width: 600px;
     margin: auto auto 20px;
     position: absolute;
     bottom: 0em;
     text-align: center;
     font-family: MyHelvetica
+}
+
+#game-over-screen {
+    position: absolute;
+}
+
+progress {  
+    background-color: #f3f3f3;  
+    border: 0;
+    height: 18px;
+    border-radius: 10%;  
+}  
+
+progress[value]::-webkit-progress-value {
+    background-image:
+    /*
+       -webkit-linear-gradient(-45deg, 
+                               transparent 33%, rgba(0, 0, 0, .1) 33%, 
+                               rgba(0,0, 0, .1) 66%, transparent 66%),
+       -webkit-linear-gradient(top, 
+                               rgba(255, 255, 255, .25), 
+                               rgba(0, 0, 0, .25)),
+    */
+    -webkit-linear-gradient(left, hsl(140, 54%, 70%), hsl(140, 54%, 70%));
+    border-radius: 20px; 
+    background-size: auto 20px, 100% 100%, 100% 100%;
+    background-color: #fff;
+}
+
+progress::-webkit-progress-bar {
+    background-color: #fff;
+    border-radius: 9px;
+    box-shadow: 3px 3px 2px hsla(0, 0%, 0%, 0.2),
+                inset 0px 0px 15px hsla(0, 0%, 0%, 0.1);
 }

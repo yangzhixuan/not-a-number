@@ -10,18 +10,18 @@ class NAN.Score
 
     update: ->
         delta = (@value - @displayedValue) * 0.1
-#        if delta == 0 and @value > @displayedValue
-#            delta = 1
         @displayedValue += delta
-        $("#score").html("#{Math.floor(@displayedValue + 0.3)}")
+        $(".score").html("#{Math.floor(@displayedValue + 0.3)}")
 
 class NAN.NumberShow
     constructor: (data)->
         @totalFrames = 50
         @time = 0
-        @finished = false 
+        @finished = false
+        @clicked = false
         @getElement().show()
-        @getElement().animate({opacity: "0.90"}, 200)
+        setStyleRuleValue(".number", "visibility", "hidden")
+        @getElement().animate({opacity: "0.70"}, 200)
         @getElementNumber().html(data.n)
         @getElementScore().html(data.score.toString() + " points")
         if data.descriptions == null or data.descriptions == ""
@@ -33,6 +33,16 @@ class NAN.NumberShow
         )
         @getElement().on(
             "touchstart",
+            =>
+                @onClick()
+        )
+        @getElement().on(
+            "touchmove",
+            =>
+                @onClick()
+        )
+        @getElement().on(
+            "touchend",
             =>
                 @onClick()
         )
@@ -50,17 +60,24 @@ class NAN.NumberShow
         $("#number-show-descriptions")
 
     onClick: ()->
-        if @finished
+        if @clicked
             return
+        @clicked = true
+        console.log(@finished)
         @getElement().animate({opacity: "0.0"}, 200)
         setTimeout(
             =>
+                @finished = true
                 @getElement().hide()
+#                alert(123321)
             , 200
         )
-        @finished = true
+        setStyleRuleValue(".number", "visibility", "visible")
+#        $(".number").animate({opacity: "1.0"}, 200)
 
     update: ->
         @time += 1
+#        console.log(123)
+#        $(".number").css("opacity", 0.0)
         ratio = (1 + Math.cos(@time / @totalFrames * Math.PI)) / 2
 #        $("#container").css("-webkit-transform", "perspective(700px) rotateY(#{ratio * 180}deg)")

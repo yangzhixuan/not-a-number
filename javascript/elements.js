@@ -20,7 +20,7 @@
       var delta;
       delta = (this.value - this.displayedValue) * 0.1;
       this.displayedValue += delta;
-      return $("#score").html("" + (Math.floor(this.displayedValue + 0.3)));
+      return $(".score").html("" + (Math.floor(this.displayedValue + 0.3)));
     };
 
     return Score;
@@ -34,9 +34,11 @@
       this.totalFrames = 50;
       this.time = 0;
       this.finished = false;
+      this.clicked = false;
       this.getElement().show();
+      setStyleRuleValue(".number", "visibility", "hidden");
       this.getElement().animate({
-        opacity: "0.90"
+        opacity: "0.70"
       }, 200);
       this.getElementNumber().html(data.n);
       this.getElementScore().html(data.score.toString() + " points");
@@ -48,6 +50,12 @@
         return _this.onClick();
       });
       this.getElement().on("touchstart", function() {
+        return _this.onClick();
+      });
+      this.getElement().on("touchmove", function() {
+        return _this.onClick();
+      });
+      this.getElement().on("touchend", function() {
         return _this.onClick();
       });
     }
@@ -70,16 +78,19 @@
 
     NumberShow.prototype.onClick = function() {
       var _this = this;
-      if (this.finished) {
+      if (this.clicked) {
         return;
       }
+      this.clicked = true;
+      console.log(this.finished);
       this.getElement().animate({
         opacity: "0.0"
       }, 200);
       setTimeout(function() {
+        _this.finished = true;
         return _this.getElement().hide();
       }, 200);
-      return this.finished = true;
+      return setStyleRuleValue(".number", "visibility", "visible");
     };
 
     NumberShow.prototype.update = function() {

@@ -2,27 +2,25 @@
 class NAN.Game
     constructor: ->
         $.backgroundBlockId = 0
-#        @background = new NAN.Background
         @score = new NAN.Score
         @gridId = 0
         @init()
         @gridMargin = 2
         @containerHeight = 670
         @containerWidth = 600
-        @numGridRows = 6
-        @numGridColumns = 6
+        @numGridRows = 5
+        @numGridColumns = 5
         @numGrids = @numGridColumns * @numGridRows
         @gridWidth = (@containerWidth - 100) / @numGridRows
         @gridHeight = @gridWidth
         @gridXOffset = 110
         @gridYOffset = (@containerWidth - @numGridColumns * @gridWidth) / 2
-        console.log(@gridWidth)
         setStyleRuleValue(".board", "width", "#{@containerWidth}px")
         setStyleRuleValue(".board", "height", "#{@containerHeight}px")
         setStyleRuleValue(".number", "line-height", "#{@gridHeight}px")
         setStyleRuleValue(".square", "height", "#{@gridHeight - @gridMargin * 2}px")
         setStyleRuleValue(".square", "width", "#{@gridWidth - @gridMargin * 2}px")
-        
+        @gameOver = false
         @grids = []
         @mouse = new NAN.Mouse
         @paused = true
@@ -31,6 +29,8 @@ class NAN.Game
         for i in [0...@numGridRows]
             @grids[i] = []
         @initTouchScreen()
+        @startTime = getTime()
+        @gridsToShow = []
 
     initTouchScreen: ()->
         $("#container").on("touchstart",
@@ -65,10 +65,9 @@ class NAN.Game
         return @getGridAt(pos.x, pos.y)
 
 
-    newGrid: (x, y)->
-        grid = new NAN.Grid(x, y, this)
+    newGrid: (x, y, show = true)->
+        grid = new NAN.Grid(x, y, this, show)
         @grids[x][y] = grid
-        grid.init()
         @gridQueue.push(grid)
 
     getGridAt: (x, y)->
@@ -99,8 +98,10 @@ class NAN.Game
                         @grids[x - 1][y].moveTo(x, y)
                         @grids[x - 1][y] = null
                     else if x == 0
-                        @newGrid(x, y)
-#                    @grids[x][y].init()
+                        @newGrid(x, y, false)
+                        @gridsToShow.push(@grids[x][y])
+                        @grids[x][y].getElement().hide()
+                        @grids[x][y].getElement().css("opacity", 0.0)
 
     updateGrids: () ->
         newQueue = []
@@ -113,7 +114,9 @@ class NAN.Game
         @gridQueue = newQueue
 
     getPaused: ->
-        if @time <= 100
+        if @gameOver
+            return true
+        if @time <= 60
             return true
         if $.numberShow and not $.numberShow.finished
             return true
@@ -123,16 +126,19 @@ class NAN.Game
 
     update: ->
         @paused = @getPaused()
-        if @time < @numGridRows * 10
-            if @time % 10 == 0
-                x = @time / 10
+        if @time < @numGridRows * 5
+            if @time % 5 == 0
+                x = @time / 5
                 for y in [0...@numGridColumns]
                     @newGrid(x, y)
         else
             @nextFrame()
-        @updateGrids()    
+        if @movementEnd()
+            for grid in @gridsToShow
+                grid.show()
+            @gridsToShow = []
+        @updateGrids()   
         @score.update()
-#        @background.update()
         @time += 1
         if $.numberShow
             $.numberShow.update()
@@ -140,11 +146,32 @@ class NAN.Game
                 $.numberShow = null
 
         if not @paused
-            @timeLeft -= 0.03
+            @timeLeft -= 0.05
+
+        if @timeLeft < 0 and not @gameOver
+            @over()
+
         $("#progressbar").attr("value", "#{@timeLeft}")
 
+    over: ()->
+        delay = 2000
+        $("#game-over-screen").fadeIn(delay)
+        @finalScore = @score.value
+        @score.addValue(-@finalScore)
+        @gameOver = true
+        if @timeLeft >= 0
+            $(".score").fadeOut(500)
+
+        setTimeout(
+            =>
+                @score.addValue(@finalScore)
+                $(".score").fadeIn(500)
+            , delay
+        )
+
 $(document).ready( ->
-    timeStep = 1.5
+    timeStep = 0
+    $("#game-over-screen").hide()
     $("#number-show").hide()
     $("#number-show").css("opacity", "0.0")
     $.analyzer = new window.NAN.Analyzer
@@ -178,10 +205,12 @@ $(document).ready( ->
         ->
             $.game.mouse.endPath()
     )
+    ###
     setTimeout(
         ->
             $("#how-to-play").slideDown(700)
         ,
         4000 * timeStep
     )
+    ###
 )

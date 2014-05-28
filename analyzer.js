@@ -148,7 +148,7 @@
         }
       }
       result = {
-        score: 10 * Math.pow(Math.max(0, n.length - 2), 2),
+        score: Math.max(0, n.length - 3),
         description: this.description
       };
       return result;
@@ -424,7 +424,7 @@
     PalindromicNumberSet.prototype.analyze = function(n) {
       if (n.split("").reverse().join("") === n) {
         return {
-          score: 10 * Math.pow(Math.max(n.length - 2, 0), 2),
+          score: 10 * Math.pow(Math.max(n.length - 3, 0), 2),
           description: this.description
         };
       }

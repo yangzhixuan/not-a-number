@@ -12,19 +12,19 @@
       this.gridMargin = 2;
       this.containerHeight = 670;
       this.containerWidth = 600;
-      this.numGridRows = 6;
-      this.numGridColumns = 6;
+      this.numGridRows = 5;
+      this.numGridColumns = 5;
       this.numGrids = this.numGridColumns * this.numGridRows;
       this.gridWidth = (this.containerWidth - 100) / this.numGridRows;
       this.gridHeight = this.gridWidth;
       this.gridXOffset = 110;
       this.gridYOffset = (this.containerWidth - this.numGridColumns * this.gridWidth) / 2;
-      console.log(this.gridWidth);
       setStyleRuleValue(".board", "width", "" + this.containerWidth + "px");
       setStyleRuleValue(".board", "height", "" + this.containerHeight + "px");
       setStyleRuleValue(".number", "line-height", "" + this.gridHeight + "px");
       setStyleRuleValue(".square", "height", "" + (this.gridHeight - this.gridMargin * 2) + "px");
       setStyleRuleValue(".square", "width", "" + (this.gridWidth - this.gridMargin * 2) + "px");
+      this.gameOver = false;
       this.grids = [];
       this.mouse = new NAN.Mouse;
       this.paused = true;
@@ -34,6 +34,8 @@
         this.grids[i] = [];
       }
       this.initTouchScreen();
+      this.startTime = getTime();
+      this.gridsToShow = [];
     }
 
     Game.prototype.initTouchScreen = function() {
@@ -77,11 +79,13 @@
       return this.getGridAt(pos.x, pos.y);
     };
 
-    Game.prototype.newGrid = function(x, y) {
+    Game.prototype.newGrid = function(x, y, show) {
       var grid;
-      grid = new NAN.Grid(x, y, this);
+      if (show == null) {
+        show = true;
+      }
+      grid = new NAN.Grid(x, y, this, show);
       this.grids[x][y] = grid;
-      grid.init();
       return this.gridQueue.push(grid);
     };
 
@@ -138,7 +142,10 @@
                 this.grids[x - 1][y].moveTo(x, y);
                 _results2.push(this.grids[x - 1][y] = null);
               } else if (x === 0) {
-                _results2.push(this.newGrid(x, y));
+                this.newGrid(x, y, false);
+                this.gridsToShow.push(this.grids[x][y]);
+                this.grids[x][y].getElement().hide();
+                _results2.push(this.grids[x][y].getElement().css("opacity", 0.0));
               } else {
                 _results2.push(void 0);
               }
@@ -170,7 +177,10 @@
     };
 
     Game.prototype.getPaused = function() {
-      if (this.time <= 100) {
+      if (this.gameOver) {
+        return true;
+      }
+      if (this.time <= 60) {
         return true;
       }
       if ($.numberShow && !$.numberShow.finished) {
@@ -183,17 +193,25 @@
     };
 
     Game.prototype.update = function() {
-      var x, y, _i, _ref;
+      var grid, x, y, _i, _j, _len, _ref, _ref1;
       this.paused = this.getPaused();
-      if (this.time < this.numGridRows * 10) {
-        if (this.time % 10 === 0) {
-          x = this.time / 10;
+      if (this.time < this.numGridRows * 5) {
+        if (this.time % 5 === 0) {
+          x = this.time / 5;
           for (y = _i = 0, _ref = this.numGridColumns; 0 <= _ref ? _i < _ref : _i > _ref; y = 0 <= _ref ? ++_i : --_i) {
             this.newGrid(x, y);
           }
         }
       } else {
         this.nextFrame();
+      }
+      if (this.movementEnd()) {
+        _ref1 = this.gridsToShow;
+        for (_j = 0, _len = _ref1.length; _j < _len; _j++) {
+          grid = _ref1[_j];
+          grid.show();
+        }
+        this.gridsToShow = [];
       }
       this.updateGrids();
       this.score.update();
@@ -205,9 +223,29 @@
         }
       }
       if (!this.paused) {
-        this.timeLeft -= 0.03;
+        this.timeLeft -= 0.05;
+      }
+      if (this.timeLeft < 0 && !this.gameOver) {
+        this.over();
       }
       return $("#progressbar").attr("value", "" + this.timeLeft);
+    };
+
+    Game.prototype.over = function() {
+      var delay,
+        _this = this;
+      delay = 2000;
+      $("#game-over-screen").fadeIn(delay);
+      this.finalScore = this.score.value;
+      this.score.addValue(-this.finalScore);
+      this.gameOver = true;
+      if (this.timeLeft >= 0) {
+        $(".score").fadeOut(500);
+      }
+      return setTimeout(function() {
+        _this.score.addValue(_this.finalScore);
+        return $(".score").fadeIn(500);
+      }, delay);
     };
 
     return Game;
@@ -216,7 +254,8 @@
 
   $(document).ready(function() {
     var timeStep;
-    timeStep = 1.5;
+    timeStep = 0;
+    $("#game-over-screen").hide();
     $("#number-show").hide();
     $("#number-show").css("opacity", "0.0");
     $.analyzer = new window.NAN.Analyzer;
@@ -248,12 +287,18 @@
         fontSize: "49px"
       }, 500 * timeStep);
     }, 3000 * timeStep);
-    $("body").mouseup(function() {
+    return $("body").mouseup(function() {
       return $.game.mouse.endPath();
     });
-    return setTimeout(function() {
-      return $("#how-to-play").slideDown(700);
-    }, 4000 * timeStep);
+    /*
+        setTimeout(
+            ->
+                $("#how-to-play").slideDown(700)
+            ,
+            4000 * timeStep
+        )
+    */
+
   });
 
 }).call(this);

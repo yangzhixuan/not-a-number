@@ -32,7 +32,7 @@ class NAN.PrimeNumberSet extends NAN.NumberSet
 		n = parseInt(n)
 		if @isPrime(n)
 			result = {}
-			result.score = Math.floor(10 + Math.sqrt(n))
+			result.score = Math.floor(10 + Math.pow(Math.log(n), 2))
 			result.description = @description
 			return result
 		return null
@@ -71,7 +71,7 @@ class NAN.PureNumberSet extends NAN.NumberSet
 		for char in n
 			if char != n[0]
 				return null
-		result = {score: Math.max(0, n.length - 3), description: @description}
+		result = {score: 10 * Math.pow(Math.max(0, n.length - 2), 2), description: @description}
 		return result
 
 
@@ -170,6 +170,12 @@ class NAN.HundredNumberSet extends NAN.NumberSet
 				break if a * b >= NAN.maximumNumber 
 				@numbers.push(a * b)
 
+	analyze: (n)->
+		result = super(n)
+		if result
+			result.score = Math.sqrt(result.score)
+		return result
+
 class NAN.AutomorphicNumberNumberSet extends NAN.NumberSet
 	constructor: ()->
 		super()
@@ -206,7 +212,7 @@ class NAN.PalindromicNumberSet extends NAN.NumberSet
 
 	analyze: (n)->
 		if n.split("").reverse().join("") == n
-			return {score: Math.max(n.length - 3, 0), description: @description}
+			return {score: 10 * Math.pow(Math.max(n.length - 2, 0), 2), description: @description}
 		return null
 
 class NAN.Analyzer

@@ -43,10 +43,10 @@
 
     Mouse.prototype.endPath = function() {
       var descriptions, i, node, numberString, result, _i, _j, _len, _ref, _ref1;
-      if (this.state === "none") {
+      if (this.state === "none" || $.game.gameOver) {
         return;
       }
-      if (this.checkPath()) {
+      if (this.checkPath() && !$.numberShow) {
         numberString = this.evaluatePath();
         result = $.analyzer.analyze(numberString);
         descriptions = result.descriptions.filter(function(desc) {

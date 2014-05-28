@@ -28,9 +28,9 @@ class NAN.Mouse
         @state = "select"
 
     endPath: ()->
-        if @state == "none"
+        if @state == "none" or $.game.gameOver
             return
-        if @checkPath()
+        if @checkPath() and not $.numberShow
             numberString = @evaluatePath()
             result = $.analyzer.analyze(numberString)
             descriptions = result.descriptions.filter(
