@@ -22,5 +22,9 @@ javascript/elements-min.js: elements.coffee
 	coffee -c -o javascript/ elements.coffee
 	uglifyjs elements.js > javascript/elements-min.js
 
-nan:  javascript/game-min.js javascript/background-min.js javascript/analyzer-min.js javascript/grid-min.js javascript/mouse-min.js javascript/elements-min.js
+javascript/audioPlayer-min.js: audioPlayer.coffee
+	coffee -c -o javascript/ audioPlayer.coffee
+	uglifyjs audioPlayer.js > javascript/audioPlayer-min.js
+
+nan:  javascript/game-min.js javascript/background-min.js javascript/analyzer-min.js javascript/grid-min.js javascript/mouse-min.js javascript/elements-min.js javascript/audioPlayer-min.js
 	echo built

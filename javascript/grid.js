@@ -187,6 +187,10 @@
       }
     };
 
+    Grid.prototype.makeSound = function() {
+      return $.audioPlayerA.play(this.value, 0.3);
+    };
+
     Grid.prototype.mouseOver = function() {
       if (this.mouse.state === "select") {
         return this.mouse.addGrid(this);

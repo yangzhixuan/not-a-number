@@ -148,7 +148,7 @@
         }
       }
       result = {
-        score: Math.max(0, n.length - 3),
+        score: 10 * Math.pow(Math.max(0, n.length - 2), 2),
         description: this.description
       };
       return result;
@@ -424,7 +424,7 @@
     PalindromicNumberSet.prototype.analyze = function(n) {
       if (n.split("").reverse().join("") === n) {
         return {
-          score: 10 * Math.pow(Math.max(n.length - 3, 0), 2),
+          score: 10 * Math.pow(Math.max(n.length - 2, 0), 2),
           description: this.description
         };
       }
@@ -432,6 +432,173 @@
     };
 
     return PalindromicNumberSet;
+
+  })(NAN.NumberSet);
+
+  NAN.prefixNumberSet = (function(_super) {
+
+    __extends(prefixNumberSet, _super);
+
+    function prefixNumberSet() {
+      this.numbers = [];
+      this.newNumber({
+        number: "31415926535",
+        description: "圆周率",
+        score: 60
+      });
+      this.newNumber({
+        number: "2718281828",
+        description: "自然常数e",
+        score: 60
+      });
+      this.newNumber({
+        number: "1414213562",
+        description: "根号2",
+        score: 40
+      });
+    }
+
+    prefixNumberSet.prototype.newNumber = function(num) {
+      return this.numbers.push({
+        number: num.number,
+        description: num.description,
+        score: num.score
+      });
+    };
+
+    prefixNumberSet.prototype.getResult = function(n) {
+      var numberInfo, _i, _len, _ref;
+      _ref = this.numbers;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        numberInfo = _ref[_i];
+        if (numberInfo.number.indexOf(n) === 0) {
+          return {
+            score: numberInfo.score * n.length,
+            description: numberInfo.description + ("的前" + n.length + "位")
+          };
+        }
+      }
+      return null;
+    };
+
+    prefixNumberSet.prototype.analyze = function(n) {
+      if (n.length < 3) {
+        return null;
+      }
+      return this.getResult(n);
+    };
+
+    return prefixNumberSet;
+
+  })(NAN.NumberSet);
+
+  NAN.meaningfulNumberSet = (function(_super) {
+
+    __extends(meaningfulNumberSet, _super);
+
+    function meaningfulNumberSet() {
+      this.numbers = [];
+      this.newNumber({
+        number: 42,
+        description: "the answer to life, the universe,<br>and everything",
+        score: 100
+      });
+      this.newNumber({
+        number: 59,
+        description: "挂科啦",
+        score: 50
+      });
+      this.newNumber({
+        number: 63,
+        description: "南南的生日",
+        score: 200
+      });
+      this.newNumber({
+        number: 603,
+        description: "南南的生日",
+        score: 200
+      });
+      this.newNumber({
+        number: 60,
+        description: "谢老师不挂之恩",
+        score: 70
+      });
+      this.newNumber({
+        number: 360,
+        description: "安全卫士",
+        score: 70
+      });
+      this.newNumber({
+        number: 211,
+        description: "开发者的狗窝",
+        score: 70
+      });
+      this.newNumber({
+        number: 985,
+        description: "看起来是一所好大学",
+        score: 70
+      });
+      this.newNumber({
+        number: 250,
+        description: "脑子出了点问题",
+        score: 70
+      });
+      this.newNumber({
+        number: 100,
+        description: "学霸你够了",
+        score: 70
+      });
+      this.newNumber({
+        number: 99,
+        description: "学霸你够了",
+        score: 70
+      });
+      this.newNumber({
+        number: 233,
+        description: "很好笑的样子",
+        score: 70
+      });
+      this.newNumber({
+        number: 119,
+        description: "着火啦",
+        score: 70
+      });
+      this.newNumber({
+        number: 1024,
+        description: "给你1024凑个整",
+        score: 70
+      });
+    }
+
+    meaningfulNumberSet.prototype.newNumber = function(num) {
+      return this.numbers.push({
+        number: num.number,
+        description: num.description,
+        score: num.score
+      });
+    };
+
+    meaningfulNumberSet.prototype.getResult = function(n) {
+      var numberInfo, _i, _len, _ref;
+      _ref = this.numbers;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        numberInfo = _ref[_i];
+        if (numberInfo.number === n) {
+          return {
+            score: numberInfo.score,
+            description: numberInfo.description
+          };
+        }
+      }
+      return null;
+    };
+
+    meaningfulNumberSet.prototype.analyze = function(n) {
+      n = parseInt(n);
+      return this.getResult(n);
+    };
+
+    return meaningfulNumberSet;
 
   })(NAN.NumberSet);
 

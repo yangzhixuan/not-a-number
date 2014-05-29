@@ -24,7 +24,8 @@ class NAN.Game
         @grids = []
         @mouse = new NAN.Mouse
         @paused = true
-        @timeLeft = 100
+        @timeLeft = 60
+        @timeTotal = 60
         @gridQueue = []
         for i in [0...@numGridRows]
             @grids[i] = []
@@ -146,12 +147,12 @@ class NAN.Game
                 $.numberShow = null
 
         if not @paused
-            @timeLeft -= 0.05
+            @timeLeft -= 0.02
 
         if @timeLeft < 0 and not @gameOver
             @over()
 
-        $("#progressbar").attr("value", "#{@timeLeft}")
+        $("#progressbar").attr("value", "#{@timeLeft / @timeTotal * 100}")
 
     over: ()->
         delay = 2000
@@ -169,12 +170,14 @@ class NAN.Game
             , delay
         )
 
-$(document).ready( ->
-    timeStep = 0
+@newGame = ->
+    if $.gameUpdater
+        clearInterval($.gameUpdater)
+    timeStep = 0.0
+    $(".square").remove()
     $("#game-over-screen").hide()
     $("#number-show").hide()
     $("#number-show").css("opacity", "0.0")
-    $.analyzer = new window.NAN.Analyzer
     $("#title").animate({top:"-=400px"}, 0)
     $("#title").animate({top:"+=400px"}, 1900 * timeStep)
     $("#how-to-play").slideUp(0)
@@ -183,7 +186,7 @@ $(document).ready( ->
     $.game = new NAN.Game
     setTimeout(
         ->
-            setInterval(
+            $.gameUpdater = setInterval(
                 -> 
                     $.game.update()
                 , 
@@ -201,10 +204,6 @@ $(document).ready( ->
         ,
         3000 * timeStep
     )
-    $("body").mouseup(
-        ->
-            $.game.mouse.endPath()
-    )
     ###
     setTimeout(
         ->
@@ -212,5 +211,36 @@ $(document).ready( ->
         ,
         4000 * timeStep
     )
-    ###
+    ###    
+
+@init = ()->
+    $.mobileMode = mobileMode()
+    $.audioPlayerA = new NAN.AudioPlayer("a")
+    $.audioPlayerB = new NAN.AudioPlayer("b")
+    $.analyzer = new window.NAN.Analyzer
+    $("#game-over-hint").click(
+        =>
+            newGame()
+    )
+    $("body").mouseup(
+        ->
+            $.game.mouse.endPath()
+    )
+
+
+$(document).ready( ->
+    init()
+    newGame()
 )
+
+
+###
+@queryServer = (id) ->
+    $.ajax
+      type: "POST",
+      url: "numbers/#{id}",
+      complete: ->
+            document.location = "deadlines" 
+      success： (text)->
+            response = text;
+###

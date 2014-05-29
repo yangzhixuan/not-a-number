@@ -28,7 +28,8 @@
       this.grids = [];
       this.mouse = new NAN.Mouse;
       this.paused = true;
-      this.timeLeft = 100;
+      this.timeLeft = 60;
+      this.timeTotal = 60;
       this.gridQueue = [];
       for (i = _i = 0, _ref = this.numGridRows; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
         this.grids[i] = [];
@@ -223,12 +224,12 @@
         }
       }
       if (!this.paused) {
-        this.timeLeft -= 0.05;
+        this.timeLeft -= 0.02;
       }
       if (this.timeLeft < 0 && !this.gameOver) {
         this.over();
       }
-      return $("#progressbar").attr("value", "" + this.timeLeft);
+      return $("#progressbar").attr("value", "" + (this.timeLeft / this.timeTotal * 100));
     };
 
     Game.prototype.over = function() {
@@ -252,13 +253,16 @@
 
   })();
 
-  $(document).ready(function() {
+  this.newGame = function() {
     var timeStep;
-    timeStep = 0;
+    if ($.gameUpdater) {
+      clearInterval($.gameUpdater);
+    }
+    timeStep = 0.0;
+    $(".square").remove();
     $("#game-over-screen").hide();
     $("#number-show").hide();
     $("#number-show").css("opacity", "0.0");
-    $.analyzer = new window.NAN.Analyzer;
     $("#title").animate({
       top: "-=400px"
     }, 0);
@@ -274,11 +278,11 @@
     }, 1900 * timeStep);
     $.game = new NAN.Game;
     setTimeout(function() {
-      return setInterval(function() {
+      return $.gameUpdater = setInterval(function() {
         return $.game.update();
       }, 20);
     }, 2000 * timeStep);
-    setTimeout(function() {
+    return setTimeout(function() {
       $("#title-1").animate({
         fontSize: "90px"
       }, 500 * timeStep);
@@ -287,9 +291,6 @@
         fontSize: "49px"
       }, 500 * timeStep);
     }, 3000 * timeStep);
-    return $("body").mouseup(function() {
-      return $.game.mouse.endPath();
-    });
     /*
         setTimeout(
             ->
@@ -299,6 +300,37 @@
         )
     */
 
+  };
+
+  this.init = function() {
+    var _this = this;
+    $.mobileMode = mobileMode();
+    $.audioPlayerA = new NAN.AudioPlayer("a");
+    $.audioPlayerB = new NAN.AudioPlayer("b");
+    $.analyzer = new window.NAN.Analyzer;
+    $("#game-over-hint").click(function() {
+      return newGame();
+    });
+    return $("body").mouseup(function() {
+      return $.game.mouse.endPath();
+    });
+  };
+
+  $(document).ready(function() {
+    init();
+    return newGame();
   });
+
+  /*
+  @queryServer = (id) ->
+      $.ajax
+        type: "POST",
+        url: "numbers/#{id}",
+        complete: ->
+              document.location = "deadlines" 
+        success： (text)->
+              response = text;
+  */
+
 
 }).call(this);

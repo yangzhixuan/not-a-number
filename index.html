@@ -12,11 +12,12 @@
     <script type="text/javascript" src="javascript/mouse.js" charset="utf-8" > </script>
     <script type="text/javascript" src="javascript/grid.js" charset="utf-8" > </script>
     <script type="text/javascript" src="javascript/elements.js" charset="utf-8" > </script>
+    <script type="text/javascript" src="javascript/audioPlayer.js" charset="utf-8" > </script>
     <script type="text/javascript" src="javascript/game.js"  charset="utf-8"> </script>
 </head>
 <body>
   <div id="title" style="position:relative;">
-    <div id = "title-1" class = "title" style="color: #7a7; line-height: 80%; font-size: 192px; margin: 20px 0 0 0; text-shadow: 3px 3px 10px hsla(0, 0%, 0%, 0.2)">NAN</div>
+    <div id = "title-1" class = "title" style="color: #897; line-height: 80%; font-size: 192px; margin: 20px 0 0 0; text-shadow: 3px 3px 10px hsla(0, 0%, 0%, 0.2)">NAN</div>
     <div id = "title-2" class = "title" style="color: #383; line-height: 90%; font-size: 60.4px; text-shadow: 3px 3px 10px hsla(0, 0%, 0%, 0.2);">Not A Number</div>
     <div id = "title-3" class = "title" style="color: #585; line-height: 95%; font-size: 42.7px; text-shadow: 3px 3px 10px hsla(0, 0%, 0%, 0.2);">A Game for Nannan</div>
   </div>
@@ -25,18 +26,22 @@
       <div id="number-show-number" class="number-show-box"> </div>
       <div id="number-show-score" class="number-show-box" style="color: #595;"> </div>
       <div id="number-show-descriptions" charset="UTF-8" class="number-show-box" style="margin: 0 auto;"> </div>
-      <div id="number-show-hint" charset="UTF-8"> Click/Touch to continue...</div>
+      <div id="number-show-hint" charset="UTF-8"> Click to continue...</div>
     </div>
     <div class="score" style="z-index: 4000; top: 0px">
       0
     </div>
 
     <div id="game-over-screen" class="board" style="z-index: 5001; background-color: #aaf" onmouseclick="location.reload()">
-      <div style="font-size:70px; margin: 100px auto; text-align: center">Game Over</div>
-      <div style="font-size:50px; margin: 100px auto; text-align: center">Your score is </div>
+      <div style="font-size:70px; margin: 100px auto; text-align: center; color: #789">Game Over</div>
+      <div style="font-size:50px; margin: 100px auto; text-align: center; color: #784">Your score is </div>
       <div class="score" style="top:400px">
         0
       </div>
+
+      <div id="game-over-nan" charset="UTF-8" style="background-color: #bbf; color:#524; height: 35px; box-shadow: 0px 5px 15px #888; cursor: pointer"> I'm Nannan...</div>
+
+      <div id="game-over-hint" charset="UTF-8" style="background-color: #4f4; color:#524; height: 35px; box-shadow: 0px 5px 15px #888; cursor: pointer"> Play Again</div>
 
     </div>
 

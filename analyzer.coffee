@@ -9,7 +9,7 @@ class NAN.NumberSet
 		n = parseInt(n)
 		if n in @numbers
 			return {score: Math.max(1, n) / Math.max(1, @numbers.indexOf(n)), description: @description}
-		return {score: 0, description: null}
+		return null
 
 class NAN.PrimeNumberSet extends NAN.NumberSet
 	isPrime: (n)->
@@ -32,7 +32,7 @@ class NAN.PrimeNumberSet extends NAN.NumberSet
 		n = parseInt(n)
 		if @isPrime(n)
 			result = {}
-			result.score = Math.floor(10 + Math.pow(Math.log(n), 2))
+			result.score = Math.floor(10 + Math.pow(Math.log(n), 2.5))
 			result.description = @description
 			return result
 		return null
@@ -205,6 +205,7 @@ class NAN.FibonacciNumberSet extends NAN.NumberSet
 			b = c
 			break if a >= NAN.maximumNumber 
 			@numbers.push(a)
+	
 
 class NAN.PalindromicNumberSet extends NAN.NumberSet
 	constructor: ()->
@@ -215,6 +216,139 @@ class NAN.PalindromicNumberSet extends NAN.NumberSet
 			return {score: 10 * Math.pow(Math.max(n.length - 2, 0), 2), description: @description}
 		return null
 
+class NAN.prefixNumberSet extends NAN.NumberSet
+	constructor: ()->
+		@numbers = []
+		@newNumber
+			number: "31415926535",
+			description: "圆周率",
+			score: 60
+
+		@newNumber
+			number: "2718281828",
+			description: "自然常数e",
+			score: 60
+
+		@newNumber
+			number: "1414213562",
+			description: "根号2",
+			score: 40
+
+	newNumber: (num)->
+		@numbers.push
+			number: num.number,
+			description: num.description,
+			score: num.score
+
+	getResult: (n)->
+		for numberInfo in @numbers
+			if numberInfo.number.indexOf(n) == 0
+				console.log(numberInfo.score, n.length)
+				return {score: numberInfo.score * n.length * n.length, description: numberInfo.description + "的前#{n.length}位"}
+		return null
+
+	analyze: (n)->
+		return null if n.length < 3
+		return @getResult(n)
+
+
+class NAN.meaningfulNumberSet extends NAN.NumberSet
+	constructor: ()->
+		@numbers = []
+
+		@newNumber
+			number: 42,
+			description: "the answer to life, the universe,<br>and everything",
+			score: 100
+
+		@newNumber
+			number: 59,
+			description: "挂科啦",
+			score: 50
+
+		@newNumber
+			number: 63,
+			description: "南南的生日",
+			score: 200
+
+		@newNumber
+			number: 603,
+			description: "南南的生日",
+			score: 200
+
+		@newNumber
+			number: 60,
+			description: "谢老师不挂之恩",
+			score: 70
+
+		@newNumber
+			number: 360,
+			description: "安全卫士",
+			score: 70
+
+		@newNumber
+			number: 211,
+			description: "开发者的狗窝",
+			score: 70
+
+
+		@newNumber
+			number: 985,
+			description: "看起来是一所好大学",
+			score: 70
+
+		@newNumber
+			number: 250,
+			description: "脑子出了点问题",
+			score: 70
+
+		@newNumber
+			number: 100,
+			description: "学霸你够了",
+			score: 70
+
+		@newNumber
+			number: 99,
+			description: "学霸你够了",
+			score: 70
+
+		@newNumber
+			number: 233,
+			description: "很好笑的样子",
+			score: 70
+
+		@newNumber
+			number: 119,
+			description: "着火啦",
+			score: 70
+
+		@newNumber
+			number: 1024,
+			description: "给你1024凑个整",
+			score: 70
+
+
+		@newNumber
+			number: 404,
+			description: "Not Found",
+			score: 70
+
+	newNumber: (num)->
+		@numbers.push
+			number: num.number,
+			description: num.description,
+			score: num.score
+
+	getResult: (n)->
+		for numberInfo in @numbers
+			if numberInfo.number == n
+				return {score: numberInfo.score, description: numberInfo.description}
+		return null
+
+	analyze: (n)->
+		n = parseInt(n)
+		return @getResult(n)
+	
 class NAN.Analyzer
 	constructor: ()->
 		@numberSets = []
@@ -228,8 +362,9 @@ class NAN.Analyzer
 		propertiesCount = 0
 		for numberSet in @numberSets
 			result = numberSet.analyze(n)
-			continue if result == null
+			continue if result == null or result.score == 0
 			score += result.score
+			console.log(result.score, result.description)
 			propertiesCount += 1
 			descriptions.push(result.description)
 		return {score: Math.floor(score * propertiesCount), descriptions: descriptions}

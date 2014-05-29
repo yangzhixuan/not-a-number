@@ -14,7 +14,7 @@ body {
     width: 60px;
     height: 60px;
     margin: 2px;
-    box-shadow: 2px 3px 5px hsla(0, 0%, 0%, 0.4);
+    box-shadow: 2px 3px 3px hsla(0, 0%, 0%, 0.4);
     text-align: center;
     border-radius: 20%;
     -webkit-transition: border-radius 200ms;
@@ -105,14 +105,39 @@ div {
     font-size: 6.6em;
     color: #060;
 }
- 
+
 #number-show-hint {
     font-size: 1.6em;
     color: #060;
     width: 600px;
     margin: auto auto 20px;
     position: absolute;
-    bottom: 0em;
+    bottom: -0.2em;
+    text-align: center;
+    font-family: MyHelvetica
+}
+
+
+
+#game-over-hint {
+    font-size: 1.6em;
+    color: #060;
+    width: 600px;
+    margin: auto auto 20px;
+    position: absolute;
+    bottom: -0.2em;
+    text-align: center;
+    font-family: MyHelvetica
+}
+
+
+#game-over-nan {
+    font-size: 1.6em;
+    color: #060;
+    width: 600px;
+    margin: auto auto 20px;
+    position: absolute;
+    bottom: 1.4em;
     text-align: center;
     font-family: MyHelvetica
 }

@@ -44,3 +44,4 @@ SQF
 终止条件
 选框
 www.subtlepatterns.com
+根据分数暂停

@@ -141,6 +141,10 @@ class NAN.Grid
             @mouse.beginPath()
             @mouse.addGrid(this)
 
+    makeSound: ()->
+        $.audioPlayerA.play(@value, 0.3)
+
+
     mouseOver: ()->
         if @mouse.state == "select"
             @mouse.addGrid(this)

@@ -64,6 +64,7 @@
         if (result.score !== 0) {
           for (i = _i = 0, _ref = this.path.length; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
             node = this.path[i];
+            $.audioPlayerB.playString(numberString);
             node.grid.clean();
           }
         }
@@ -95,6 +96,7 @@
       }
       if (!inside) {
         if (this.path.length === 0 || this.path[this.path.length - 1].grid.isConnecting(grid)) {
+          grid.makeSound();
           grid.selected = true;
           node = {
             x: grid.x,

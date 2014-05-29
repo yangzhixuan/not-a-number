@@ -1,7 +1,7 @@
 import os
 import time
 
-files = ["game", "background", "analyzer", "grid", "mouse", "elements"]
+files = ["game", "background", "analyzer", "grid", "mouse", "elements", "audioPlayer"]
 
 makefile = open("Makefile", "w")
 
@@ -24,6 +24,6 @@ makefile.write(makestr)
 makefile.close()
 
 while True:
-	time.sleep(1)
+	time.sleep(0.1)
 	for f in files:
 		os.system("make nan")

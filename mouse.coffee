@@ -48,7 +48,7 @@ class NAN.Mouse
             if result.score != 0
                 for i in [0...@path.length]
                     node = @path[i]
-           #         node.grid.hideAfter(100 * i)
+                    $.audioPlayerB.playString(numberString)
                     node.grid.clean()
         for node in @path
             node.grid.selected = false
@@ -62,10 +62,11 @@ class NAN.Mouse
             return
         inside = false
         for node in @path
-            if node.x == grid.x and node.y ==  grid.y
+            if node.x == grid.x and node.y == grid.y
                 inside = true
         if not inside
             if @path.length == 0 or @path[@path.length - 1].grid.isConnecting(grid)
+                grid.makeSound()
                 grid.selected = true
                 node = {x: grid.x, y: grid.y, grid: grid}
                 @path.push(node)
