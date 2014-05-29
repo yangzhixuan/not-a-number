@@ -1,7 +1,7 @@
 import os
 import time
 
-files = ["game", "background", "analyzer", "grid", "mouse", "elements", "audioPlayer"]
+files = ["game", "background", "analyzer", "grid", "mouse", "elements", "audioPlayer", "rotateTask"]
 
 makefile = open("Makefile", "w")
 

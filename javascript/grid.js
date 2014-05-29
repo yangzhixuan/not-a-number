@@ -59,7 +59,7 @@
       this.height = $.game.gridHeight;
       this.color = this.getColor();
       this.remainedTime = -1;
-      $("#container").append("<div class='square' id='square-" + this.id + "'></div>");
+      $("#game-area").append("<div class='square' id='square-" + this.id + "'></div>");
       this.position = this.getPosition();
       this.getElement().css("background-color", colorToString(this.color));
       this.getElement().append("<div class='number'>" + this.value + "</div>");

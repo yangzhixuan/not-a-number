@@ -26,5 +26,9 @@ javascript/audioPlayer-min.js: audioPlayer.coffee
 	coffee -c -o javascript/ audioPlayer.coffee
 	uglifyjs audioPlayer.js > javascript/audioPlayer-min.js
 
-nan:  javascript/game-min.js javascript/background-min.js javascript/analyzer-min.js javascript/grid-min.js javascript/mouse-min.js javascript/elements-min.js javascript/audioPlayer-min.js
+javascript/rotateTask-min.js: rotateTask.coffee
+	coffee -c -o javascript/ rotateTask.coffee
+	uglifyjs rotateTask.js > javascript/rotateTask-min.js
+
+nan:  javascript/game-min.js javascript/background-min.js javascript/analyzer-min.js javascript/grid-min.js javascript/mouse-min.js javascript/elements-min.js javascript/audioPlayer-min.js javascript/rotateTask-min.js
 	echo built

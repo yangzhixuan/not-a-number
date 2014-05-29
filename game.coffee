@@ -171,19 +171,21 @@ class NAN.Game
         )
 
 @newGame = ->
+    a  = new NAN.RotateTask("#welcome-screen", "#game-area")
+
+    $.game = new NAN.Game
     if $.gameUpdater
         clearInterval($.gameUpdater)
-    timeStep = 0.0
+    timeStep = 0.7
     $(".square").remove()
     $("#game-over-screen").hide()
     $("#number-show").hide()
     $("#number-show").css("opacity", "0.0")
-    $("#title").animate({top:"-=400px"}, 0)
-    $("#title").animate({top:"+=400px"}, 1900 * timeStep)
+#    $("#title").animate({top:"-=400px"}, 0)
+#    $("#title").animate({top:"+=400px"}, 1900 * timeStep)
     $("#how-to-play").slideUp(0)
-    $("#container").animate({top:"+=700px"}, 0)
-    $("#container").animate({top:"-=700px"}, 1900 * timeStep)
-    $.game = new NAN.Game
+#    $("#container").animate({top:"+=700px"}, 0)
+#    $("#container").animate({top:"-=700px"}, 1900 * timeStep)
     setTimeout(
         ->
             $.gameUpdater = setInterval(
@@ -213,24 +215,48 @@ class NAN.Game
     )
     ###    
 
+@listenClick = (ele, func)->
+    ele.click(
+        =>
+            func()
+    )
+    ele.on(
+        "touchstart",
+        =>
+            func()
+    )
+
 @init = ()->
+
     $.mobileMode = mobileMode()
+    if $.mobileMode
+        setStyleRuleValue(".square:hover", "border-radius", "20%")
+        
     $.audioPlayerA = new NAN.AudioPlayer("a")
     $.audioPlayerB = new NAN.AudioPlayer("b")
     $.analyzer = new window.NAN.Analyzer
-    $("#game-over-hint").click(
+    $.game = new NAN.Game
+
+    listenClick($("#game-over-hint"),
         =>
             newGame()
     )
+
     $("body").mouseup(
         ->
             $.game.mouse.endPath()
     )
 
+    listenClick(
+        $("#welcome-screen"),
+        =>
+   #         $("#welcome-screen").fadeOut(200)
+            newGame()
+    )
+
 
 $(document).ready( ->
     init()
-    newGame()
 )
 
 

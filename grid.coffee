@@ -44,7 +44,7 @@ class NAN.Grid
         @height = $.game.gridHeight
         @color = @getColor() 
         @remainedTime = -1
-        $("#container").append("<div class='square' id='square-#{@id}'></div>")
+        $("#game-area").append("<div class='square' id='square-#{@id}'></div>")
         @position = @getPosition()
         @getElement().css("background-color", colorToString(@color))
         @getElement().append("<div class='number'>#{@value}</div>")

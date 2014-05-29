@@ -254,8 +254,7 @@
   })();
 
   this.newGame = function() {
-    var a, timeStep;
-    a = new NAN.RotateTask("#welcome-screen", "#game-area");
+    var timeStep;
     $.game = new NAN.Game;
     if ($.gameUpdater) {
       clearInterval($.gameUpdater);
@@ -266,6 +265,12 @@
     $("#number-show").hide();
     $("#number-show").css("opacity", "0.0");
     $("#how-to-play").slideUp(0);
+    $("#container").animate({
+      top: "+=700px"
+    }, 0);
+    $("#container").animate({
+      top: "-=700px"
+    }, 1900 * timeStep);
     setTimeout(function() {
       return $.gameUpdater = setInterval(function() {
         return $.game.update();
@@ -291,16 +296,6 @@
 
   };
 
-  this.listenClick = function(ele, func) {
-    var _this = this;
-    ele.click(function() {
-      return func();
-    });
-    return ele.on("touchstart", function() {
-      return func();
-    });
-  };
-
   this.init = function() {
     var _this = this;
     $.mobileMode = mobileMode();
@@ -311,13 +306,14 @@
     $.audioPlayerB = new NAN.AudioPlayer("b");
     $.analyzer = new window.NAN.Analyzer;
     $.game = new NAN.Game;
-    listenClick($("#game-over-hint"), function() {
+    $("#game-over-hint").click(function() {
       return newGame();
     });
     $("body").mouseup(function() {
       return $.game.mouse.endPath();
     });
-    return listenClick($("#welcome-screen"), function() {
+    return $("#welcome-screen").click(function() {
+      $("#welcome-screen").fadeOut(200);
       return newGame();
     });
   };

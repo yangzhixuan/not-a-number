@@ -21,9 +21,6 @@ body {
     transition: border-radius 200ms;
 }
 
-/*
-@media screen and (min-device-width : 1024px) {
-}*/
 .square:hover {
    border-radius: 50%;
 }
@@ -61,6 +58,7 @@ body {
 }
 
 .board {
+    position:absolute;
     height: 600px;
     width: 680px;
     background: url(skulls.png) repeat
@@ -174,4 +172,12 @@ progress::-webkit-progress-bar {
     border-radius: 9px;
     box-shadow: 3px 3px 2px hsla(0, 0%, 0%, 0.2),
                 inset 0px 0px 15px hsla(0, 0%, 0%, 0.1);
+}
+
+
+#welcome-screen div {
+    font-size:70px;
+    margin: 30px auto;
+    text-align: center;
+    color: #789
 }

@@ -32,7 +32,7 @@ function setStyleRuleValue(selector, style, value) {
             }
         }
     }
-    console.log("selector or style not found")
+//    console.log("selector or style not found")
     return null;
 }
 

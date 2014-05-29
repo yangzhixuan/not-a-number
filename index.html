@@ -12,8 +12,9 @@
     <script type="text/javascript" src="javascript/mouse.js" charset="utf-8" > </script>
     <script type="text/javascript" src="javascript/grid.js" charset="utf-8" > </script>
     <script type="text/javascript" src="javascript/elements.js" charset="utf-8" > </script>
-    <script type="text/javascript" src="javascript/audioPlayer.js" charset="utf-8" > </script>
     <script type="text/javascript" src="javascript/game.js"  charset="utf-8"> </script>
+    <script type="text/javascript" src="javascript/rotateTask.js"  charset="utf-8"> </script>
+    <script type="text/javascript" src="javascript/audioPlayer.js" charset="utf-8" > </script>
 </head>
 <body>
   <div id="title" style="position:relative;">
@@ -22,17 +23,22 @@
     <div id = "title-3" class = "title" style="color: #585; line-height: 95%; font-size: 42.7px; text-shadow: 3px 3px 10px hsla(0, 0%, 0%, 0.2);">A Game for Nannan</div>
   </div>
   <div id="container"  class="board" style="margin: 30px auto">
+    <div id="game-area" class="board">
+
+      <div class="score" style="z-index: 4000; top: 0px">
+        0
+      </div>
+      <progress id="progressbar" value="100" max="100" style="position: absolute; left:53px; top: 75px; width: 496px;"></progress> 
+
+    </div>
     <div id="number-show" class="board">
       <div id="number-show-number" class="number-show-box"> </div>
       <div id="number-show-score" class="number-show-box" style="color: #595;"> </div>
-      <div id="number-show-descriptions" charset="UTF-8" class="number-show-box" style="margin: 0 auto;"> </div>
+      <div id="number-show-descriptions" charset="UTF-8" class="number-show-box" style="font-family: '黑体'; margin: 0 auto;"> </div>
       <div id="number-show-hint" charset="UTF-8"> Click to continue...</div>
     </div>
-    <div class="score" style="z-index: 4000; top: 0px">
-      0
-    </div>
 
-    <div id="game-over-screen" class="board" style="z-index: 5001; background-color: #aaf" onmouseclick="location.reload()">
+    <div id="game-over-screen" class="board" style="z-index: 5001; background-color: #aaf">
       <div style="font-size:70px; margin: 100px auto; text-align: center; color: #789">Game Over</div>
       <div style="font-size:50px; margin: 100px auto; text-align: center; color: #784">Your score is </div>
       <div class="score" style="top:400px">
@@ -46,10 +52,18 @@
     </div>
 
 
-    <progress id="progressbar" value="100" max="100" style="position: absolute; left:53px; top: 75px; width: 496px;"></progress> 
 
+    <div id="welcome-screen" class="board" style="z-index: 5002">
+      <div style="font-size:130px; ">数非数</div>
+      <div style="font-size:48px; margin: 0px 0px 150px">给某人的生日礼物</div>
 
+      <div style="font-size:34px; ">感谢机油们的测试与指导</div>
+      <div style="font-size:20px; ">在计算机/iPad上使用Chrome/Safari浏览器<br>以获得更好的体验</div>
+      <div style="font-size:60px; ">Click to start...<div>
+
+    </div>
   </div>
+
   <div id="how-to-play" style="margin: 30px auto; display: none;">
     <div style="width: 600px; margin: 0 auto; font-size: 20px; line-height: 120%; color: #282; text-align: center">
       在一分钟内连出你喜欢的数字<br>
