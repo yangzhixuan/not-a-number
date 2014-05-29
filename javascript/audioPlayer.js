@@ -88,7 +88,7 @@
       var i, _i, _ref, _results;
       _results = [];
       for (i = _i = 0, _ref = n.length; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
-        _results.push(new NAN.AudioTask(parseInt(n[i]), 200 + i * 200, this));
+        _results.push(new NAN.AudioTask(parseInt(n[i]), 400 + i * 200, this));
       }
       return _results;
     };

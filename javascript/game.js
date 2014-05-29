@@ -34,35 +34,9 @@
       for (i = _i = 0, _ref = this.numGridRows; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
         this.grids[i] = [];
       }
-      this.initTouchScreen();
       this.startTime = getTime();
       this.gridsToShow = [];
     }
-
-    Game.prototype.initTouchScreen = function() {
-      var _this = this;
-      $("#container").on("touchstart", function(e) {
-        var grid;
-        grid = _this.getEventGrid(e);
-        if (grid) {
-          grid.mouseDown();
-        }
-        return false;
-      });
-      $("#container").on("touchmove", function(e) {
-        var grid;
-        grid = _this.getEventGrid(e);
-        if (grid) {
-          grid.mouseOver();
-        }
-        console.log(grid);
-        return false;
-      });
-      return $("#container").on("touchend", function(e) {
-        _this.mouse.endPath();
-        return false;
-      });
-    };
 
     Game.prototype.getEventPosition = function(e) {
       var x, y;
@@ -236,10 +210,10 @@
       var delay,
         _this = this;
       delay = 2000;
-      $("#game-over-screen").fadeIn(delay);
       this.finalScore = this.score.value;
       this.score.addValue(-this.finalScore);
       this.gameOver = true;
+      new NAN.RotateTask("#game-over-screen", -1);
       if (this.timeLeft >= 0) {
         $(".score").fadeOut(500);
       }
@@ -254,32 +228,33 @@
   })();
 
   this.newGame = function() {
-    var a, timeStep;
-    a = new NAN.RotateTask("#welcome-screen", "#game-area");
+    var timeStep;
+    new NAN.RotateTask("#game-area");
     $.game = new NAN.Game;
     if ($.gameUpdater) {
       clearInterval($.gameUpdater);
     }
     timeStep = 0.7;
     $(".square").remove();
-    $("#game-over-screen").hide();
     $("#number-show").hide();
     $("#number-show").css("opacity", "0.0");
     $("#how-to-play").slideUp(0);
-    setTimeout(function() {
+    return setTimeout(function() {
       return $.gameUpdater = setInterval(function() {
         return $.game.update();
       }, 20);
     }, 2000 * timeStep);
-    return setTimeout(function() {
-      $("#title-1").animate({
-        fontSize: "90px"
-      }, 500 * timeStep);
-      $("#title-2").slideUp(500 * timeStep);
-      return $("#title-3").animate({
-        fontSize: "49px"
-      }, 500 * timeStep);
-    }, 3000 * timeStep);
+    /*
+        setTimeout(
+            ->
+                $("#title-1").animate({fontSize: "90px"}, 500 * timeStep)
+                $("#title-2").slideUp(500 * timeStep)
+                $("#title-3").animate({fontSize: "49px"}, 500 * timeStep)
+            ,
+            3000 * timeStep
+        )
+    */
+
     /*
         setTimeout(
             ->
@@ -303,6 +278,7 @@
 
   this.init = function() {
     var _this = this;
+    $.currentScreen = "#welcome-screen";
     $.mobileMode = mobileMode();
     if ($.mobileMode) {
       setStyleRuleValue(".square:hover", "border-radius", "20%");
@@ -314,11 +290,33 @@
     listenClick($("#game-over-hint"), function() {
       return newGame();
     });
+    listenClick($("#welcome-screen"), function() {
+      return newGame();
+    });
     $("body").mouseup(function() {
       return $.game.mouse.endPath();
     });
-    return listenClick($("#welcome-screen"), function() {
-      return newGame();
+    $("#game-over-screen").hide(0);
+    $("#container").on("touchstart", function(e) {
+      var grid;
+      grid = $.game.getEventGrid(e);
+      if (grid) {
+        grid.mouseDown();
+      }
+      return false;
+    });
+    $("#container").on("touchmove", function(e) {
+      var grid;
+      grid = $.game.getEventGrid(e);
+      if (grid) {
+        grid.mouseOver();
+      }
+      console.log(grid);
+      return false;
+    });
+    return $("#container").on("touchend", function(e) {
+      $.game.mouse.endPath();
+      return false;
     });
   };
 

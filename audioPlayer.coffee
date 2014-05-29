@@ -53,4 +53,4 @@ class NAN.AudioPlayer
 
 	playString: (n)->
 		for i in [0...n.length]
-			new NAN.AudioTask(parseInt(n[i]), 200 + i * 200, @)
+			new NAN.AudioTask(parseInt(n[i]), 400 + i * 200, @)

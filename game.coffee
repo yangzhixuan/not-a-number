@@ -29,32 +29,9 @@ class NAN.Game
         @gridQueue = []
         for i in [0...@numGridRows]
             @grids[i] = []
-        @initTouchScreen()
+#        @initTouchScreen()
         @startTime = getTime()
         @gridsToShow = []
-
-    initTouchScreen: ()->
-        $("#container").on("touchstart",
-            (e)=>
-                grid = @getEventGrid(e)
-                if grid
-                    grid.mouseDown()
-                return false
-        )
-        $("#container").on("touchmove",
-            (e)=>
-                grid = @getEventGrid(e)
-                if grid
-                    grid.mouseOver()
-                console.log(grid)
-                return false
-        )
-        $("#container").on("touchend",
-            (e)=>
-                @mouse.endPath()
-                return false
-        )
-
 
     getEventPosition: (e)->
         y = e.originalEvent.targetTouches[0].pageX - $("#container").offset().left
@@ -156,10 +133,10 @@ class NAN.Game
 
     over: ()->
         delay = 2000
-        $("#game-over-screen").fadeIn(delay)
         @finalScore = @score.value
         @score.addValue(-@finalScore)
         @gameOver = true
+        new NAN.RotateTask("#game-over-screen", -1)
         if @timeLeft >= 0
             $(".score").fadeOut(500)
 
@@ -171,14 +148,12 @@ class NAN.Game
         )
 
 @newGame = ->
-    a  = new NAN.RotateTask("#welcome-screen", "#game-area")
-
+    new NAN.RotateTask("#game-area")
     $.game = new NAN.Game
     if $.gameUpdater
         clearInterval($.gameUpdater)
     timeStep = 0.7
     $(".square").remove()
-    $("#game-over-screen").hide()
     $("#number-show").hide()
     $("#number-show").css("opacity", "0.0")
 #    $("#title").animate({top:"-=400px"}, 0)
@@ -198,6 +173,7 @@ class NAN.Game
         2000 * timeStep
     )
 
+    ###
     setTimeout(
         ->
             $("#title-1").animate({fontSize: "90px"}, 500 * timeStep)
@@ -206,6 +182,7 @@ class NAN.Game
         ,
         3000 * timeStep
     )
+    ###
     ###
     setTimeout(
         ->
@@ -227,7 +204,7 @@ class NAN.Game
     )
 
 @init = ()->
-
+    $.currentScreen = "#welcome-screen"
     $.mobileMode = mobileMode()
     if $.mobileMode
         setStyleRuleValue(".square:hover", "border-radius", "20%")
@@ -241,17 +218,39 @@ class NAN.Game
         =>
             newGame()
     )
+    listenClick(
+        $("#welcome-screen"),
+        =>
+            newGame()
+    )
 
     $("body").mouseup(
         ->
             $.game.mouse.endPath()
     )
 
-    listenClick(
-        $("#welcome-screen"),
-        =>
-   #         $("#welcome-screen").fadeOut(200)
-            newGame()
+    $("#game-over-screen").hide(0)
+
+
+    $("#container").on("touchstart",
+        (e)=>
+            grid = $.game.getEventGrid(e)
+            if grid
+                grid.mouseDown()
+            return false
+    )
+    $("#container").on("touchmove",
+        (e)=>
+            grid = $.game.getEventGrid(e)
+            if grid
+                grid.mouseOver()
+            console.log(grid)
+            return false
+    )
+    $("#container").on("touchend",
+        (e)=>
+            $.game.mouse.endPath()
+            return false
     )
 
 

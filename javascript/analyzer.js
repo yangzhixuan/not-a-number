@@ -571,6 +571,16 @@
         description: "Not Found",
         score: 70
       });
+      this.newNumber({
+        number: 520,
+        description: "爱的誓言",
+        score: 270
+      });
+      this.newNumber({
+        number: 521,
+        description: "爱的誓言",
+        score: 270
+      });
     }
 
     meaningfulNumberSet.prototype.newNumber = function(num) {

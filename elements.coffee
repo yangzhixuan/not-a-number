@@ -1,6 +1,5 @@
 class NAN.Score
     constructor: ->
-#        $("#score").css("-webkit-transform", "translate()")
         @value = 0
         @displayedValue = 0
         @position = {x: 20, y: $("#container").width() / 2}
@@ -69,7 +68,6 @@ class NAN.NumberShow
             =>
                 @finished = true
                 @getElement().hide()
-#                alert(123321)
             , 200
         )
         setStyleRuleValue(".number", "visibility", "visible")
@@ -77,7 +75,4 @@ class NAN.NumberShow
 
     update: ->
         @time += 1
-#        console.log(123)
-#        $(".number").css("opacity", 0.0)
         ratio = (1 + Math.cos(@time / @totalFrames * Math.PI)) / 2
-#        $("#container").css("-webkit-transform", "perspective(700px) rotateY(#{ratio * 180}deg)")

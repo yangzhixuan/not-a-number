@@ -333,6 +333,16 @@ class NAN.meaningfulNumberSet extends NAN.NumberSet
 			description: "Not Found",
 			score: 70
 
+		@newNumber
+			number: 520,
+			description: "爱的誓言",
+			score: 270
+
+		@newNumber
+			number: 521,
+			description: "爱的誓言",
+			score: 270
+
 	newNumber: (num)->
 		@numbers.push
 			number: num.number,
